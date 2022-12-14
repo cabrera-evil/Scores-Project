@@ -1,5 +1,5 @@
-let url = 'https://scores-api-production.up.railway.app/api/users';
-let faculty_url = 'https://scores-api-production.up.railway.app/api/faculties';
+let url = 'scores-project-production.up.railway.app/api/users';
+let faculty_url = 'scores-project-production.up.railway.app/api/faculties';
 
 // On dom load
 document.addEventListener('DOMContentLoaded', () => {
