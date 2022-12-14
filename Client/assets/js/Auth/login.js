@@ -1,4 +1,4 @@
-const url = 'https://https://scores-project-production.up.railway.app/api/auth/login';
+const url = 'https://scores-project-production.up.railway.app/api/auth/login';
 
 // Login request
 const login = async (email, password) => {
