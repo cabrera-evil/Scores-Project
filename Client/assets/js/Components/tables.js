@@ -1,5 +1,5 @@
-let user_url = "scores-project-production.up.railway.app/api/users"
-let faculty_url = "scores-project-production.up.railway.app/api/faculties"
+let user_url = "https://scores-project-production.up.railway.app/api/users"
+let faculty_url = "https://scores-project-production.up.railway.app/api/faculties"
 
 // Get user id
 function parseJwt(token) {

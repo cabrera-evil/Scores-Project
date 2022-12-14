@@ -1,4 +1,4 @@
-let url = "scores-project-production.up.railway.app/api/users"
+let url = "https://scores-project-production.up.railway.app/api/users"
 
 // Get user id
 function parseJwt(token) {
