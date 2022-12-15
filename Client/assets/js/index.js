@@ -79,9 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Display admin panel if user is admin
     if (role == 'ADMIN_ROLE') {
       admin.style.display = 'block';
+      document.getElementById('addons').style.display = 'block';
     }
     else {
       admin.style.display = 'none';
+      document.getElementById('addons').style.display = 'none';
     }
 
     // Redirect to dashboard if we have a token (it's already logged)
