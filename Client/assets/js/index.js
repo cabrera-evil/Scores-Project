@@ -65,32 +65,45 @@ function loadScript(url, type = 'text/javascript') {
   head.appendChild(script);
 }
 
-// Decode JWT
-function parseJwt(token) {
-  var base64Url = token.split('.')[1];
-  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
-
-  return JSON.parse(jsonPayload);
-}
-
 // On dom load
 document.addEventListener('DOMContentLoaded', () => {
+  // Decode JWT
+  function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  }
+
   // Get token from local storage
   const token = localStorage.getItem('token');
+  const admin = document.getElementById('admin-panel');
+  
   // Select User Name label and update with logged user's data
   if (token) {
+    // Set user role
+    const role = parseJwt(token).role;
+
+    // Display admin panel if user is admin
+    if (role == 'admin') {
+      admin.style.display = 'block';
+    }
+    else {
+      admin.style.display = 'none';
+    }
+
     // Redirect to dashboard if we have a token (it's already logged)
     if (window.location.pathname == '/index.html' || window.location.pathname == '/register.html' || window.location.pathname == '/forgot.html') {
       window.location.href = '/../../dashboard.html'
     }
-    
+
     // Set user data in header
     const userName = document.getElementById('lbl-username');
     userName.innerText = JSON.parse(localStorage.getItem('user')).name;
-    
+
     // Import other scripts
     loadScript("/assets/js/Home/header.js");
     loadScript("/assets/js/Home/summary.js");
@@ -109,12 +122,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // Redirect to login if we don't have a token
   else if (window.location.pathname != '/index.html' && window.location.pathname != '/register.html' && window.location.pathname != '/forgot.html') {
     window.location.href = '/../../index.html';
-  }
-
-  if(token.parseJwt(token).role == 'admin') {
-    document.getElementById('admin-users').style.display = 'block';
-  }
-  else{
-    document.getElementById('admin-users').style.display = 'none';
   }
 });
