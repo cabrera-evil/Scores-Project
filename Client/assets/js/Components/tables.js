@@ -117,49 +117,52 @@ if (window.location.pathname === '/subjects.html') {
                 let userSubjects = response.data.users[0].subjects;
                 // const tbody = document.getElementById('tbody-subjects');
                 for (let i = 0; i < userSubjects.length; i++) {
-                    // Set table data
-                    const tr = document.createElement('tr');
-                    const tdName = document.createElement('td');
-                    const tdTime = document.createElement('td');
-                    const tdUv = document.createElement('td');
-                    const tdAverage = document.createElement('td');
-                    const tdApproved = document.createElement('td');
-                    // Action buttons
-                    const tdActions = document.createElement('td');
-                    const btnSuccess = document.createElement('button');
-                    const btnDelete = document.createElement('button');
-                    // Action buttons
-                    btnSuccess.classList.add('btn', 'btn-success', 'btn-circle', 'btn-sm');
-                    btnDelete.classList.add('btn', 'btn-danger', 'btn-circle', 'btn-sm');
-                    // Add favicon button
-                    const check = document.createElement('i');
-                    check.classList.add('fas', 'fa-check');
+                    console.log(userSubjects[i]);
+                    if (userSubjects[i].current) {
+                        // Set table data
+                        const tr = document.createElement('tr');
+                        const tdName = document.createElement('td');
+                        const tdTime = document.createElement('td');
+                        const tdUv = document.createElement('td');
+                        const tdAverage = document.createElement('td');
+                        const tdApproved = document.createElement('td');
+                        // Action buttons
+                        const tdActions = document.createElement('td');
+                        const btnSuccess = document.createElement('button');
+                        const btnDelete = document.createElement('button');
+                        // Action buttons
+                        btnSuccess.classList.add('btn', 'btn-success', 'btn-circle', 'btn-sm');
+                        btnDelete.classList.add('btn', 'btn-danger', 'btn-circle', 'btn-sm');
+                        // Add favicon button
+                        const check = document.createElement('i');
+                        check.classList.add('fas', 'fa-check');
 
-                    const trash = document.createElement('i');
-                    trash.classList.add('fas', 'fa-trash');
+                        const trash = document.createElement('i');
+                        trash.classList.add('fas', 'fa-trash');
 
-                    btnSuccess.appendChild(check);
-                    btnDelete.appendChild(trash);
+                        btnSuccess.appendChild(check);
+                        btnDelete.appendChild(trash);
 
-                    // Styling buttons
-                    btnSuccess.style.marginLeft = '1rem';
-                    btnDelete.style.marginLeft = '1rem';
-                    
-                    // Set data
-                    tdName.innerText = userSubjects[i].name;
-                    tdUv.innerText = userSubjects[i].uv;
-                    tdTime.innerText = userSubjects[i].times;
-                    tdAverage.innerText = userSubjects[i].average;
-                    tdApproved.innerText = userSubjects[i].approved;
-                    tdActions.appendChild(btnSuccess);
-                    tdActions.appendChild(btnDelete);
-                    tr.appendChild(tdName);
-                    tr.appendChild(tdUv);
-                    tr.appendChild(tdTime);
-                    tr.appendChild(tdAverage);
-                    tr.appendChild(tdApproved);
-                    tr.appendChild(tdActions);
-                    table.appendChild(tr);
+                        // Styling buttons
+                        btnSuccess.style.marginLeft = '1rem';
+                        btnDelete.style.marginLeft = '1rem';
+
+                        // Set data
+                        tdName.innerText = userSubjects[i].name;
+                        tdUv.innerText = userSubjects[i].uv;
+                        tdTime.innerText = userSubjects[i].times;
+                        tdAverage.innerText = userSubjects[i].average;
+                        tdApproved.innerText = userSubjects[i].approved;
+                        tdActions.appendChild(btnSuccess);
+                        tdActions.appendChild(btnDelete);
+                        tr.appendChild(tdName);
+                        tr.appendChild(tdUv);
+                        tr.appendChild(tdTime);
+                        tr.appendChild(tdAverage);
+                        tr.appendChild(tdApproved);
+                        tr.appendChild(tdActions);
+                        table.appendChild(tr);
+                    }
                 }
             }
             );
