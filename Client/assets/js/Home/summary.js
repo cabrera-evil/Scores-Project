@@ -16,8 +16,34 @@ if (window.location.pathname == "/dashboard.html") {
     // Get user's data (academic profile)
     axios.get(url = url + "?_id=" + user)
         .then(response => {
-            const select = document.getElementById('cum');
-            select.innerText = response.data.users[0].cum;
+            const lblCum = document.getElementById('user-cum');
+            lblCum.innerText = response.data.users[0].cum;
+            const lblCareer = document.getElementById('user-career');
+            lblCareer.innerText = response.data.users[0].career;
+
+            // Find the user subject with lowest average
+            const subjects = response.data.users[0].subjects;
+
+            // Get the lowest average
+            getImprove(subjects);
         }
         );
+
+    // Get user's subjects improve
+    function getImprove(subjects) {
+        let lowest = subjects[0];
+        let subject = "";
+
+        subjects.forEach(sub => {
+            if (sub.average < lowest.average) {
+                lowest = sub.average;
+                subject = sub.name;
+            }
+            else{
+                subject = lowest.name;
+            }
+        });
+        const lblImprove = document.getElementById('user-improve');
+        lblImprove.innerText = subject;
+    }
 }
