@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Select User Name label and update with logged user's data
   if (localStorage.getItem('token')) {
     // Redirect to dashboard if we have a token (it's already logged)
-    if (window.location.pathname == '/index.html') {
+    if (window.location.pathname == '/index.html' || window.location.pathname == '/register.html' || window.location.pathname == '/forgot.html') {
       window.location.href = '/../../dashboard.html'
     }
     // Set user data in header
@@ -78,8 +78,18 @@ document.addEventListener('DOMContentLoaded', () => {
     userName.innerText = JSON.parse(localStorage.getItem('user')).name;
     // Import other scripts
     loadScript("/assets/js/Home/header.js");
-    loadScript("/assets/js/Components/tables.js");
     loadScript("/assets/js/Home/summary.js");
+
+    // Import other scripts
+    if (window.location.pathname == '/subjects.html') {
+      loadScript("/assets/js/Components/subjects.js");
+    }
+    else if (window.location.pathname == '/evaluations.html') {
+      loadScript("/assets/js/Components/evaluations.js");
+    }
+    else if (window.location.pathname == '/admin_users.html') {
+      loadScript("/assets/js/Components/users.js");
+    }
   }
   // Redirect to login if we don't have a token
   else if (window.location.pathname != '/index.html' && window.location.pathname != '/register.html' && window.location.pathname != '/forgot.html') {

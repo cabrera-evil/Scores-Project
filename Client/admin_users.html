@@ -408,9 +408,17 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary" id="btn-add">Add</button>
-                            <button type="submit" class="btn btn-primary" id="btn-edit">Edit</button>
-                            <button type="submit" class="btn btn-primary" id="btn-delete">Clear</button>
+                            <div class="form-group">
+                                <label for="career">Career</label>
+                                <select id="career" class="form-control" name="career" required autofocus>
+                                    <option value="" selected>Select a career</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    What's your career?
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" id="btn-add">Add</button>
+                                <button type="submit" class="btn btn-primary" id="btn-delete">Clear</button>
                         </form>
 
                         <div class="card-body">
@@ -420,21 +428,25 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Email</th>
+                                            <th>Role</th>
                                             <th>Career</th>
+                                            <th>CUM</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
                                             <th>Name</th>
                                             <th>Email</th>
+                                            <th>Role</th>
                                             <th>Career</th>
+                                            <th>CUM</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </tfoot>
-                                    <tbody>
+                                    <tbody id="users-table">
                                         <tr>
-                                            <td>User name</td>
-                                            <td>User email</td>
-                                            <td>User career</td>
+                                            <!-- Here will be all user's data -->
                                         </tr>
                                     </tbody>
                                 </table>
@@ -497,13 +509,6 @@
 
         <!-- Custom scripts for all pages-->
         <script src="assets/js/index.js"></script>
-
-        <!-- Page level plugins -->
-        <script src="vendor/datatables/jquery.dataTables.js"></script>
-        <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-
-        <!-- Page level custom scripts -->
-        <script src="assets/js/demo/datatables-demo.js"></script>
 </body>
 
 </html>
