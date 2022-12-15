@@ -26,12 +26,27 @@ const careerExistByName = async (name = "") => {
     for (let i = 0; i < find.careers.length; i++) {
       if (find.careers[i].name === name) {
         flag = true;
-        return find.careers[i];
       }
     }
   }
   )
   return flag;
+};
+
+// Get career name by id
+const CareerIdByName = async (name = "") => {
+  const findFaculty = await Faculty.find();
+  let careerId;
+
+  findFaculty.map((find) => {
+    for (let i = 0; i < find.careers.length; i++) {
+      if (find.careers[i].name === name) {
+        careerId = find.careers[i].id;
+      }
+    }
+  }
+  )
+  return careerId;
 };
 
 // Validate if the subject exist
@@ -106,6 +121,7 @@ module.exports = {
   emailExist,
   userExistByID,
   careerExistByName,
+  CareerIdByName,
   subjectExistById,
   subjectExistByName,
   getSubjectById,

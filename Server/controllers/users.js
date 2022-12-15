@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const uuidv4 = require('uuid').v4;
 
-const { careerExistByName, subjectExistById, getSubjectById } = require("../helpers/db-validators");
+const { careerExistByName, CareerIdByName, getSubjectById } = require("../helpers/db-validators");
 
 // Get all users
 const usersGet = async (req = request, res = response) => {
@@ -43,7 +43,7 @@ const usersPost = async (req, res) => {
         });
     }
     else{
-        user.career_id = careerDB.id;
+        user.career_id = await CareerIdByName(user.career);
     }
 
     await user.save();
