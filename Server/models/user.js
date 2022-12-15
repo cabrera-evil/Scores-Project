@@ -55,6 +55,10 @@ const userSchema = mongoose.Schema({
             type: Boolean,
             default: false
         },
+        current:{
+            type: Boolean,
+            default: true
+        },
         times:{
             type: Number,
             default: 1

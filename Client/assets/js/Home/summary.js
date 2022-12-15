@@ -12,7 +12,7 @@ function parseJwt(token) {
 }
 const user = parseJwt(localStorage.getItem('token')).uid;
 
-if (window.location.pathname == "/index.html") {
+if (window.location.pathname == "/dashboard.html") {
     // Get user's data (academic profile)
     axios.get(url = url + "?_id=" + user)
         .then(response => {

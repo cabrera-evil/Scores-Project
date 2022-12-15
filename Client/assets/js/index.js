@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadScript("/assets/js/Components/tables.js");
     loadScript("/assets/js/Home/summary.js");
   }
-  else if(window.location.pathname != '/login.html' && window.location.pathname != '/register.html' && window.location.pathname != '/forgot.html') {
-    window.location.href = '/../../login.html';
+  else if(window.location.pathname != '/index.html' && window.location.pathname != '/register.html' && window.location.pathname != '/forgot.html') {
+    window.location.href = '/../../index.html';
   }
 });

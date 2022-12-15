@@ -35,7 +35,7 @@ function registerUser(data) {
     })
         .then(response => {
             console.log(response);
-            window.location.href = '/login.html';
+            window.location.href = '/index.html';
         })
         .catch(error => {
             console.log(error);

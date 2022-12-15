@@ -8,7 +8,7 @@ const login = async (email, password) => {
     })
     .then((response) => {
         if(response.status === 200) {
-            window.location.href = '/../../index.html';
+            window.location.href = '/../../dashboard.html';
             // Add token to local storage
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
