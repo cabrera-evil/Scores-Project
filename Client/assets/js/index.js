@@ -67,17 +67,6 @@ function loadScript(url, type = 'text/javascript') {
 
 // On dom load
 document.addEventListener('DOMContentLoaded', () => {
-  // Decode JWT
-  function parseJwt(token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-
-    return JSON.parse(jsonPayload);
-  }
-
   // Get token from local storage
   const token = localStorage.getItem('token');
   const admin = document.getElementById('admin-panel');
@@ -85,10 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Select User Name label and update with logged user's data
   if (token) {
     // Set user role
-    const role = parseJwt(token).role;
+    const role = JSON.parse(localStorage.getItem('user')).role;
 
     // Display admin panel if user is admin
-    if (role == 'admin') {
+    if (role == 'ADMIN_ROLE') {
       admin.style.display = 'block';
     }
     else {
