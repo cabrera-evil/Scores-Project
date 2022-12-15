@@ -80,6 +80,7 @@ const usersPatch = async (req, res = response) => {
                 year: subjectData.year,
                 average: subjects[0].average ? subjects[0].average : 0,
                 approved: subjects[0].approved ? subjects[0].approved : false,
+                current: subjects[0].current ? subjects[0].current : true,
                 times: subjects[0].times ? subjects[0].times : 1,
                 evaluations: subjects[0].evaluations ? subjects[0].evaluations : []
             }
