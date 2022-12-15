@@ -70,21 +70,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // Select User Name label and update with logged user's data
   if (localStorage.getItem('token')) {
     // Redirect to dashboard if we have a token (it's already logged)
-    if(window.location.pathname == '/index.html'){
+    if (window.location.pathname == '/index.html') {
       window.location.href = '/../../dashboard.html'
     }
     // Set user data in header
-    if(window.location.pathname == '/dashboard.html'){
-      const userName = document.getElementById('lbl-username');
+    const userName = document.getElementById('lbl-username');
     userName.innerText = JSON.parse(localStorage.getItem('user')).name;
-    }
     // Import other scripts
     loadScript("/assets/js/Home/header.js");
     loadScript("/assets/js/Components/tables.js");
     loadScript("/assets/js/Home/summary.js");
   }
   // Redirect to login if we don't have a token
-  else if(window.location.pathname != '/index.html' && window.location.pathname != '/register.html' && window.location.pathname != '/forgot.html') {
+  else if (window.location.pathname != '/index.html' && window.location.pathname != '/register.html' && window.location.pathname != '/forgot.html') {
     window.location.href = '/../../index.html';
   }
 });

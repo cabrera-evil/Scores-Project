@@ -23,6 +23,9 @@
     <!-- Set favicon -->
     <link rel="icon" href="assets/img/logo.jpg" type="image/x-icon" />
 
+    <!-- Axios Import -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.js"></script>
+
 </head>
 
 <body id="page-top">
@@ -73,7 +76,7 @@
                     <span>Evaluations</span></a>
             </li>
 
-            
+
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -369,43 +372,61 @@
                             <h6 class="m-0 font-weight-bold text-primary">Evaluations</h6>
                         </div>
 
-                        <form class="card-header py-3">
+                        <form class="card-header py-3" id="frm-evaluations">
                             <div class="form-group">
                                 <div class="form-group">
                                     <label for="subject">Subject</label>
                                     <select id="subject" name="subject" class="form-control" required>
-                                        <option value="" disabled selected>Select subject</option>
+                                        <option value="" selected>Select subject</option>
                                     </select>
                                     <div class="invalid-feedback">
                                         What's the subject?
                                     </div>
                                 </div>
 
-                                <label for="name">Name</label>
-                                <select id="name" name="name" class="form-control" required>
-                                    <option value="" disabled selected>Select name</option>
-                                    <option value="partial">Partial</option>
-                                    <option value="short">Short</option>
-                                    <option value="homework">Homework</option>
-                                    <option value="laboratory">Laboratory</option>
-                                </select>
-                                <div class="invalid-feedback">
-                                    What's the evaluation name?
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <select id="name" name="name" class="form-control" required>
+                                        <option value="" selected>Select name</option>
+                                        <option value="Partial">Partial</option>
+                                        <option value="Short">Short</option>
+                                        <option value="Homework">Homework</option>
+                                        <option value="Laboratory">Laboratory</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        What's the evaluation name?
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-                                <label for="percentage">Percentage</label>
-                                <select id="percentage" name="percentage" class="form-control" required>
-                                    <option value="" disabled selected>Select percentage</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="15">15%</option>
-                                    <option value="20">20%</option>
-                                    <option value="25">25%</option>
-                                </select>
-                                <div class="invalid-feedback">
-                                    Invalid percentage
+                                <!-- Add evaluation number -->
+                                <div class="form-group>
+                                <label for=" number">Evaluation number</label>
+                                    <select id="number" name="number" class="form-control" required>
+                                        <option value="" selected>Select number</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Invalid number
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="percentage">Percentage</label>
+                                    <select id="percentage" name="percentage" class="form-control" required>
+                                        <option value="" selected>Select percentage</option>
+                                        <option value="5">5%</option>
+                                        <option value="10">10%</option>
+                                        <option value="15">15%</option>
+                                        <option value="20">20%</option>
+                                        <option value="25">25%</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Invalid percentage
+                                    </div>
                                 </div>
                             </div>
 
@@ -418,6 +439,10 @@
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
+                                        <label for="subject">Subject</label>
+                                        <select id="find-subject" name="subject" class="form-control" required>
+                                            <option value="" selected>Select subject</option>
+                                        </select>
                                         <tr>
                                             <th>Subject</th>
                                             <th>Name</th>
@@ -435,7 +460,7 @@
                                             <th>Actions</th>
                                         </tr>
                                     </tfoot>
-                                    <tbody>
+                                    <tbody id="evaluation-table">
                                         <tr>
                                             <!-- Here will be the user's data -->
                                         </tr>
