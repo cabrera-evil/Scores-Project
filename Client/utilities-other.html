@@ -45,7 +45,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="dashboard.html">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -56,7 +56,55 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Interface
+                User Panel
+            </div>
+
+            <!-- Nav Items -->
+
+            <li class="nav-item">
+                <a class="nav-link" href="subjects.html">
+                    <i class="fas fa-fw fa-book"></i>
+                    <span>Subjects</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="evaluations.html">
+                    <i class="fas fa-fw fa-book-open"></i>
+                    <span>Evaluations</span></a>
+            </li>
+
+            
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Admin Panel
+            </div>
+
+            <!-- Nav Item - Tables Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTables"
+                    aria-expanded="true" aria-controls="collapseTables">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Tables</span>
+                </a>
+                <div id="collapseTables" class="collapse" aria-labelledby="headingTables"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Admin:</h6>
+                        <a class="collapse-item" href="admin_users.html">Users</a>
+                        <div class="collapse-divider"></div>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Addons
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
@@ -76,20 +124,20 @@
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item active">
-                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fas fa-fw fa-wrench"></i>
                     <span>Utilities</span>
                 </a>
-                <div id="collapseUtilities" class="collapse show" aria-labelledby="headingUtilities"
+                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Utilities:</h6>
                         <a class="collapse-item" href="utilities-color.html">Colors</a>
                         <a class="collapse-item" href="utilities-border.html">Borders</a>
                         <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                        <a class="collapse-item active" href="utilities-other.html">Other</a>
+                        <a class="collapse-item" href="utilities-other.html">Other</a>
                     </div>
                 </div>
             </li>
@@ -97,52 +145,10 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Addons
-            </div>
-
-            
-
-
-            <!-- Nav Items -->
-
-            <li class="nav-item">
-                <a class="nav-link" href="subjects.html">
-                    <i class="fas fa-fw fa-book"></i>
-                    <span>Subjects</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="evaluations.html">
-                    <i class="fas fa-fw fa-book-open"></i>
-                    <span>Evaluations</span></a>
-            </li>
-
-            <!-- Nav Item - Tables Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTables"
-                    aria-expanded="true" aria-controls="collapseTables">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Admin Panel</span>
-                </a>
-                <div id="collapseTables" class="collapse" aria-labelledby="headingTables" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Admin:</h6>
-                        <a class="collapse-item" href="admin_users.html">Users</a>
-                        <div class="collapse-divider"></div>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
-
         </ul>
         <!-- End of Sidebar -->
 
