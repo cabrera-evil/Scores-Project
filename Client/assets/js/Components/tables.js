@@ -18,7 +18,12 @@ if (window.location.pathname === '/subjects.html') {
     // Document elements
     const uv = document.getElementById('uv');
     const year = document.getElementById('year');
+    const table = document.getElementById('subject-table');
 
+    // Get user's subjects
+    getSubjects();
+
+    // To add new subjects
     year.addEventListener('change', async () => {
         // Delete options
         const options = document.querySelectorAll('#subjects option');
@@ -94,11 +99,70 @@ if (window.location.pathname === '/subjects.html') {
             })
             .then(response => {
                 console.log(response);
-                // window.location.href = '/subjects.html';
+                window.location.href = '/subjects.html';
             })
             .catch(error => {
                 console.log(error);
             });
+    }
+
+    // Get subjects data
+    async function getSubjects() {
+        // Local variables
+        let subjects = [];
+
+        // Get user's subjects
+        axios.get(`${user_url}?id=${user}`)
+            .then(response => {
+                let userSubjects = response.data.users[0].subjects;
+                // const tbody = document.getElementById('tbody-subjects');
+                for (let i = 0; i < userSubjects.length; i++) {
+                    // Set table data
+                    const tr = document.createElement('tr');
+                    const tdName = document.createElement('td');
+                    const tdTime = document.createElement('td');
+                    const tdUv = document.createElement('td');
+                    const tdAverage = document.createElement('td');
+                    const tdApproved = document.createElement('td');
+                    // Action buttons
+                    const tdActions = document.createElement('td');
+                    const btnSuccess = document.createElement('button');
+                    const btnDelete = document.createElement('button');
+                    // Action buttons
+                    btnSuccess.classList.add('btn', 'btn-success', 'btn-circle', 'btn-sm');
+                    btnDelete.classList.add('btn', 'btn-danger', 'btn-circle', 'btn-sm');
+                    // Add favicon button
+                    const check = document.createElement('i');
+                    check.classList.add('fas', 'fa-check');
+
+                    const trash = document.createElement('i');
+                    trash.classList.add('fas', 'fa-trash');
+
+                    btnSuccess.appendChild(check);
+                    btnDelete.appendChild(trash);
+
+                    // Styling buttons
+                    btnSuccess.style.marginLeft = '1rem';
+                    btnDelete.style.marginLeft = '1rem';
+                    
+                    // Set data
+                    tdName.innerText = userSubjects[i].name;
+                    tdUv.innerText = userSubjects[i].uv;
+                    tdTime.innerText = userSubjects[i].times;
+                    tdAverage.innerText = userSubjects[i].average;
+                    tdApproved.innerText = userSubjects[i].approved;
+                    tdActions.appendChild(btnSuccess);
+                    tdActions.appendChild(btnDelete);
+                    tr.appendChild(tdName);
+                    tr.appendChild(tdUv);
+                    tr.appendChild(tdTime);
+                    tr.appendChild(tdAverage);
+                    tr.appendChild(tdApproved);
+                    tr.appendChild(tdActions);
+                    table.appendChild(tr);
+                }
+            }
+            );
     }
 }
 
