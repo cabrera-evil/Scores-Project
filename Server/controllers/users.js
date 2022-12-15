@@ -42,6 +42,9 @@ const usersPost = async (req, res) => {
             msg: `The career ${user.career} does not exist in the database`
         });
     }
+    else{
+        user.career_id = careerDB.id;
+    }
 
     await user.save();
     res.json({

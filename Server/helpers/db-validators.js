@@ -26,6 +26,7 @@ const careerExistByName = async (name = "") => {
     for (let i = 0; i < find.careers.length; i++) {
       if (find.careers[i].name === name) {
         flag = true;
+        return find.careers[i];
       }
     }
   }
