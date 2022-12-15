@@ -80,10 +80,12 @@ if (window.location.pathname === '/subjects.html') {
     // Register subjects request
     async function registerSubjects(data) {
         axios.patch(`${user_url}/${user}`, {
-            subjects: {
-                id: data.subjects,
-                times: data.time
-            }
+            subjects: [
+                {
+                    id: data.subjects,
+                    times: data.time
+                }
+            ]
         },
             {
                 headers: {
