@@ -120,13 +120,41 @@ const usersPatch = async (req, res = response) => {
     if (evaluations) {
         // Find his subject per id
         for (let i = 0; i < evaluations.length; i++) {
-            const subject = user.subjects.find(subject => subject.id == evaluations[i].subject_id);
+            const subject = await user.subjects.find(subject => subject.id == evaluations[i].subject_id);
             if (subject) {
                 // Check if evaluation already exists
                 let flag = false;
                 subject.evaluations.forEach((evaluation) => {
                     if (evaluation.id == evaluations[i].id) {
                         flag = true;
+                        const evaluation = subject.evaluations.find(evaluation => evaluation.id == evaluations[i].id);
+
+                        // Delete evaluation
+                        if (evaluations[i].delete) {
+                            const index = subject.evaluations.indexOf(evaluation);
+                            subject.evaluations.splice(index, 1);
+
+                            // Update subject average
+                            subject.average = calculateAverage(subject.evaluations);
+                            if (subject.average >= 6) {
+                                subject.approved = true;
+                            }
+                            else {
+                                subject.approved = false;
+                            }
+                        }
+                        
+                        // Update evaluation grade
+                        evaluation.grade = evaluations[i].grade ? evaluations[i].grade : 0;
+
+                        // Calculate average
+                        subject.average = calculateAverage(subject.evaluations);
+                        if (subject.average >= 6) {
+                            subject.approved = true;
+                        }
+                        else {
+                            subject.approved = false;
+                        }
                     }
                 }
                 )
@@ -151,41 +179,6 @@ const usersPatch = async (req, res = response) => {
                     }
                 };
             }
-        }
-        // Find his subject per id
-        const subject = await user.subjects.find(subject => subject.id == evaluations[0].subject_id);
-        if (subject) {
-            // Check if evaluation already exists
-            subject.evaluations.forEach((evaluation) => {
-                // If there's an evaluation with the same name, update it
-                if (evaluation.id == evaluations[0].id) {
-                    const evaluation = subject.evaluations.find(evaluation => evaluation.id == evaluations[0].id);
-                    if (evaluations[0].delete) {
-                        // Delete current evaluation
-                        const index = subject.evaluations.indexOf(evaluation);
-                        subject.evaluations.splice(index, 1);
-
-                        // Update subject average
-                        subject.average = calculateAverage(subject.evaluations);
-                        if (subject.average >= 6) {
-                            subject.approved = true;
-                        }
-                        else {
-                            subject.approved = false;
-                        }
-                    }
-                    evaluation.grade = evaluations[0].grade ? evaluations[0].grade : 0;
-
-                    subject.average = calculateAverage(subject.evaluations);
-                    if (subject.average >= 6) {
-                        subject.approved = true;
-                    }
-                    else {
-                        subject.approved = false;
-                    }
-                }
-            }
-            )
         }
     }
 
