@@ -119,13 +119,6 @@ if (window.location.pathname == "/dashboard.html") {
                 </div>
             `;
             }
-            else if (subjectAverages[i] == 0) {
-                mySubject.innerHTML += `
-                <div class="col-auto">
-                    <i class="fas fa-circle text-info"></i> ${subjectNames[i]}
-                </div>
-            `;
-            }
             else {
                 mySubject.innerHTML += `
                 <div class="col-auto">
@@ -149,16 +142,13 @@ if (window.location.pathname == "/dashboard.html") {
                             return '#1cc88a';
                         }
                         else if (context.dataset.data[context.dataIndex] == 6.0) {
-                            return '#36b9cc';
+                            return '#4e73df';
                         }
                         else if (context.dataset.data[context.dataIndex] >= 5.0) {
                             return '#36b9cc';
                         }
                         else if (context.dataset.data[context.dataIndex] >= 4.0) {
                             return '#f6c23e';
-                        }
-                        else if (context.dataset.data[context.dataIndex] == 0) {
-                            return '#e74a3b';
                         }
                         else {
                             return '#e74a3b';
@@ -175,16 +165,13 @@ if (window.location.pathname == "/dashboard.html") {
                             return '#1cc88a';
                         }
                         else if (context.parsed.y == 6.0) {
-                            return '#36b9cc';
+                            return '#4e73df';
                         }
                         else if (context.parsed.y >= 5.0) {
                             return '#36b9cc';
                         }
                         else if (context.parsed.y >= 4.0) {
                             return '#f6c23e';
-                        }
-                        else if (context.parsed.y == 0) {
-                            return '#e74a3b';
                         }
                         else {
                             return '#e74a3b';
@@ -239,9 +226,6 @@ if (window.location.pathname == "/dashboard.html") {
                 }
                 else if (subjects[i].average >= 4.0) {
                     bar.className += " bg-warning";
-                }
-                else if (subjects[i].average == 0) {
-                    bar.className += " bg-info";
                 }
                 else {
                     bar.className += " bg-danger";
