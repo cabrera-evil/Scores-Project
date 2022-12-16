@@ -79,7 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Redirect to dashboard if we have a token (it's already logged)
     if (window.location.pathname == '/index.html' || window.location.pathname == '/register.html' || window.location.pathname == '/forgot.html') {
       window.location.href = '/../../dashboard.html'
+    }
 
+    // Validate if user is admin
+    if (window.location.pathname != 'index.html' || window.location.pathname != 'register.html' || window.location.pathname != 'forgot.html') {
       // Display admin panel if user is admin
       if (role == 'ADMIN_ROLE') {
         admin.style.display = 'block';
@@ -91,6 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Redirect to dashboard if isn't admin
+    if (window.location.pathname == '/admin_users.html' && role != 'ADMIN_ROLE') {
+      window.location.href = '/../../dashboard.html';
+    }
+    
     // Set user data in header
     const userName = document.getElementById('lbl-username');
     userName.innerText = JSON.parse(localStorage.getItem('user')).name;
