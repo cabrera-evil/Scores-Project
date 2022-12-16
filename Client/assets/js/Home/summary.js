@@ -28,33 +28,41 @@ if (window.location.pathname == "/dashboard.html") {
             getImprove(subjects);
 
             // Get subjects for charts
-            const data = getSubjects(subjects);
+            const data = setCurrentSubjects(subjects);
             setChartData(data[0], data[1]);
 
-            // Get user's subjects
-            setCurrentSubjects(subjects);
+            // Set progress bar
+            setProgressBar(subjects);
+
+            // Get user's passed subjects
+            const approvedSubjects = setPassedSubjects(subjects);
+            setOverview(approvedSubjects[0], approvedSubjects[1]);
         }
         );
 
     // Get user's subjects improve
     function getImprove(subjects) {
         // Find the user subject with lowest average and with current status true
-        for (let i = 1; i < subjects.length; i++) {
-            for (let j = 0; j <= i; j++) {
-                if (subjects[i].average < subjects[j].average && subjects[i].current == true) {
-                    const lblImprove = document.getElementById('user-improve');
-                    lblImprove.innerText = subjects[i].name;
-                }
+        let lowestAverage = 10.0;
+        let subjectName = "";
+        for (let i = 0; i < subjects.length; i++) {
+            if (subjects[i].current && subjects[i].average < lowestAverage) {
+                lowestAverage = subjects[i].average;
+                subjectName = subjects[i].name;
             }
         }
+
+        // Set the lowest average
+        const lblImprove = document.getElementById('user-improve');
+        lblImprove.innerText = subjectName;
     }
 
-    // Get user's subjects for charts
-    function getSubjects(subjects) {
+    // Get user current subjects
+    function setCurrentSubjects(subjects) {
         let subjectNames = [];
         let subjectAverages = [];
         for (let i = 0; i < subjects.length; i++) {
-            if (subjects[i].current == true) {
+            if (subjects[i].current) {
                 subjectNames.push(subjects[i].name);
                 subjectAverages.push(subjects[i].average);
             }
@@ -62,12 +70,25 @@ if (window.location.pathname == "/dashboard.html") {
         return [subjectNames, subjectAverages];
     }
 
-    // Set chart data
+    // Get all subjects data
+    function setPassedSubjects(subjects) {
+        let subjectNames = [];
+        let subjectAverages = [];
+        for (let i = 0; i < subjects.length; i++) {
+            if (!subjects[i].current) {
+                subjectNames.push(subjects[i].name);
+                subjectAverages.push(subjects[i].average);
+            }
+        }
+        return [subjectNames, subjectAverages];
+    }
+
+    // Set pie chart data
     function setChartData(subjectNames, subjectAverages) {
-        let ctx = document.getElementById("myPieChart");
+        let ctx_pie = document.getElementById("myPieChart");
         let mySubject = document.getElementById("subject-name");
 
-        // Set a label for every subject name
+        // Set pie chart labels
         for (let i = 0; i < subjectNames.length; i++) {
             // Set a color per subject average
             if (subjectAverages[i] > 6.0) {
@@ -77,7 +98,7 @@ if (window.location.pathname == "/dashboard.html") {
                 </div>
             `;
             }
-            else if (subjectAverages[i] == 6.0 ) {
+            else if (subjectAverages[i] == 6.0) {
                 mySubject.innerHTML += `
                 <div class="col-auto">
                     <i class="fas fa-circle text-primary"></i> ${subjectNames[i]}
@@ -98,7 +119,7 @@ if (window.location.pathname == "/dashboard.html") {
                 </div>
             `;
             }
-            else if(subjectAverages[i] == 0){
+            else if (subjectAverages[i] == 0) {
                 mySubject.innerHTML += `
                 <div class="col-auto">
                     <i class="fas fa-circle text-info"></i> ${subjectNames[i]}
@@ -114,8 +135,8 @@ if (window.location.pathname == "/dashboard.html") {
             }
         }
 
-        // Set chart data
-        let myPieChart = new Chart(ctx, {
+        // Set pie chart data
+        let myPieChart = new Chart(ctx_pie, {
             type: 'doughnut',
             data: {
                 labels: subjectNames,
@@ -185,7 +206,8 @@ if (window.location.pathname == "/dashboard.html") {
         });
     }
 
-    function setCurrentSubjects(subjects) {
+    // Set current subjects data on progress bar
+    function setProgressBar(subjects) {
         const subjectList = document.getElementById('subject-list');
         for (let i = 0; i < subjects.length; i++) {
             if (subjects[i].current == true) {
@@ -226,7 +248,7 @@ if (window.location.pathname == "/dashboard.html") {
                 }
 
                 // Set progress bar width
-                bar.style = `width:${subjects[i].average*10}%`;
+                bar.style = `width:${subjects[i].average * 10}%`;
                 bar.ariaValueNow = subjects[i].average;
                 bar.ariaValueMin = "0";
                 bar.ariaValueMax = "10";
@@ -238,5 +260,98 @@ if (window.location.pathname == "/dashboard.html") {
                 progress.appendChild(bar);
             }
         }
+    }
+
+    // Set area chart data
+    function setOverview(subjectNames, subjectAverages) {
+        let ctx_area = document.getElementById("myAreaChart");
+
+        let myAreaChart = new Chart(ctx_area, {
+            type: 'line',
+            data: {
+                labels: subjectNames,
+                datasets: [{
+                    label: "Average",
+                    lineTension: 0.3,
+                    backgroundColor: "rgba(78, 115, 223, 0.05)",
+                    borderColor: "rgba(78, 115, 223, 1)",
+                    pointRadius: 3,
+                    pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                    pointBorderColor: "rgba(78, 115, 223, 1)",
+                    pointHoverRadius: 3,
+                    pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                    pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                    pointHitRadius: 10,
+                    pointBorderWidth: 2,
+                    data: subjectAverages,
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 25,
+                        top: 25,
+                        bottom: 0
+                    }
+                },
+                scales: {
+                    xAxes: [{
+                        time: {
+                            unit: 'date'
+                        },
+                        gridLines: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 7
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            maxTicksLimit: 5,
+                            padding: 10,
+                            // Include a dollar sign in the ticks
+                            callback: function (value, index, values) {
+                                return value;
+                            }
+                        },
+                        gridLines: {
+                            color: "rgb(234, 236, 244)",
+                            zeroLineColor: "rgb(234, 236, 244)",
+                            drawBorder: false,
+                            borderDash: [2],
+                            zeroLineBorderDash: [2]
+                        }
+                    }],
+                },
+                legend: {
+                    display: false
+                },
+                tooltips: {
+                    backgroundColor: "rgb(255,255,255)",
+                    bodyFontColor: "#858796",
+                    titleMarginBottom: 10,
+                    titleFontColor: '#6e707e',
+                    titleFontSize: 14,
+                    borderColor: '#dddfeb',
+                    borderWidth: 1,
+                    xPadding: 15,
+                    yPadding: 15,
+                    displayColors: false,
+                    intersect: false,
+                    mode: 'index',
+                    caretPadding: 10,
+                    callbacks: {
+                        label: function (tooltipItem, chart) {
+                            var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                            return datasetLabel + ': ' + tooltipItem.yLabel;
+                        }
+                    }
+                }
+            }
+        });
     }
 }
