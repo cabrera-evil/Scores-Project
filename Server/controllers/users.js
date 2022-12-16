@@ -96,31 +96,27 @@ const usersPatch = async (req, res = response) => {
         // Find his subject per id
         const subject = user.subjects.find(subject => subject.id == evaluations[0].subject_id);
         if (subject) {
-            // Check if evaluation already exists
-            let flag = false;
+            // Check if evaluation did exists
             subject.evaluations.forEach((evaluation) => {
-                if (evaluation.name == evaluations[0].name) {
-                    flag = true;
+                // If there's no evaluation with the same name, add it
+                if (evaluation.id == evaluations[0].id) {
+                    const newEvaluation = {
+                        id: uuidv4(),
+                        subject_id: evaluations[0].subject_id,
+                        name: evaluations[0].name,
+                        percentage: evaluations[0].percentage,
+                        grade: evaluations[0].grade ? evaluations[0].grade : 0,
+                    }
+                    subject.evaluations.push(newEvaluation);
+    
+                    // Update subject average
+                    subject.average = calculateAverage(subject.evaluations);
+                    if (subject.average >= 6) {
+                        subject.approved = true;
+                    }
                 }
             }
             )
-            // If there's no evaluation with the same name, add it
-            if (!flag) {
-                const newEvaluation = {
-                    id: uuidv4(),
-                    subject_id: evaluations[0].subject_id,
-                    name: evaluations[0].name,
-                    percentage: evaluations[0].percentage,
-                    grade: evaluations[0].grade ? evaluations[0].grade : 0,
-                }
-                subject.evaluations.push(newEvaluation);
-
-                // Update subject average
-                subject.average = calculateAverage(subject.evaluations);
-                if (subject.average >= 6) {
-                    subject.approved = true;
-                }
-            };
         }
     }
 
@@ -130,7 +126,6 @@ const usersPatch = async (req, res = response) => {
         const subject = await user.subjects.find(subject => subject.id == evaluations[0].subject_id);
         if (subject) {
             // Check if evaluation already exists
-            let flag = false;
             subject.evaluations.forEach((evaluation) => {
                 // If there's an evaluation with the same name, update it
                 if (evaluation.id == evaluations[0].id) {
