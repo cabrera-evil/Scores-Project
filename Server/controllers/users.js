@@ -96,10 +96,10 @@ const usersPatch = async (req, res = response) => {
         // Find his subject per id
         const subject = user.subjects.find(subject => subject.id == evaluations[0].subject_id);
         if (subject) {
-            // Check if evaluation did exists
+            // Check if evaluation didn't exists
             subject.evaluations.forEach((evaluation) => {
                 // If there's no evaluation with the same name, add it
-                if (evaluation.id == evaluations[0].id) {
+                if (evaluation.id != evaluations[0].id) {
                     const newEvaluation = {
                         id: uuidv4(),
                         subject_id: evaluations[0].subject_id,
