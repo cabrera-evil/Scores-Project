@@ -91,7 +91,43 @@ const usersPatch = async (req, res = response) => {
         };
     }
 
-    // Add new evaluation or edit existent one
+    // Add new evaluation
+    if (evaluations) {
+        // Find his subject per id
+        const subject = user.subjects.find(subject => subject.id == evaluations[0].subject_id);
+        if (subject) {
+            // Check if evaluation already exists
+            let flag = false;
+            subject.evaluations.forEach((evaluation) => {
+                if (evaluation.id == evaluations[0].id) {
+                    flag = true;
+                }
+            }
+            )
+            // If there's no evaluation with the same name, add it
+            if (!flag) {
+                const newEvaluation = {
+                    id: uuidv4(),
+                    subject_id: evaluations[0].subject_id,
+                    name: evaluations[0].name,
+                    percentage: evaluations[0].percentage,
+                    grade: evaluations[0].grade ? evaluations[0].grade : 0,
+                }
+                subject.evaluations.push(newEvaluation);
+
+                // Update subject average
+                subject.average = calculateAverage(subject.evaluations);
+                if (subject.average >= 6) {
+                    subject.approved = true;
+                }
+                else{
+                    subject.approved = false;
+                }
+            };
+        }
+    }
+
+    // Edit evaluation grade
     if (evaluations) {
         // Find his subject per id
         const subject = await user.subjects.find(subject => subject.id == evaluations[0].subject_id);
@@ -107,21 +143,8 @@ const usersPatch = async (req, res = response) => {
                     if (subject.average >= 6) {
                         subject.approved = true;
                     }
-                }
-                else{
-                    const newEvaluation = {
-                        id: uuidv4(),
-                        subject_id: evaluations[0].subject_id,
-                        name: evaluations[0].name,
-                        percentage: evaluations[0].percentage,
-                        grade: evaluations[0].grade ? evaluations[0].grade : 0,
-                    }
-                    subject.evaluations.push(newEvaluation);
-    
-                    // Update subject average
-                    subject.average = calculateAverage(subject.evaluations);
-                    if (subject.average >= 6) {
-                        subject.approved = true;
+                    else{
+                        subject.approved = false;
                     }
                 }
             }
