@@ -64,25 +64,112 @@ if (window.location.pathname == "/dashboard.html") {
 
     // Set chart data
     function setChartData(subjectNames, subjectAverages) {
-        let total = 100;
-
         let ctx = document.getElementById("myPieChart");
+        let mySubject = document.getElementById("subject-name");
+
+        // Set a label for every subject name
+        for (let i = 0; i < subjectNames.length; i++) {
+            // Set a color per subject average
+            if (subjectAverages[i] > 6.0) {
+                mySubject.innerHTML += `
+                <div class="col-auto">
+                    <i class="fas fa-circle text-success"></i> ${subjectNames[i]}
+                </div>
+            `;
+            }
+            else if (subjectAverages[i] == 6.0 ) {
+                mySubject.innerHTML += `
+                <div class="col-auto">
+                    <i class="fas fa-circle text-primary"></i> ${subjectNames[i]}
+                </div>
+            `;
+            }
+            else if (subjectAverages[i] >= 5.0) {
+                mySubject.innerHTML += `
+                <div class="col-auto">
+                    <i class="fas fa-circle text-info"></i> ${subjectNames[i]}
+                </div>
+            `;
+            }
+            else if (subjectAverages[i] >= 4.0) {
+                mySubject.innerHTML += `
+                <div class="col-auto">
+                    <i class="fas fa-circle text-warning"></i> ${subjectNames[i]}
+                </div>
+            `;
+            }
+            else if(subjectAverages[i] == 0){
+                mySubject.innerHTML += `
+                <div class="col-auto">
+                    <i class="fas fa-circle text-info"></i> ${subjectNames[i]}
+                </div>
+            `;
+            }
+            else {
+                mySubject.innerHTML += `
+                <div class="col-auto">
+                    <i class="fas fa-circle text-danger"></i> ${subjectNames[i]}
+                </div>
+            `;
+            }
+        }
+
+        // Set chart data
         let myPieChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: subjectNames,
                 datasets: [{
-                    data: [55, 30, 15],
-                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-                    hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
-                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                    // If subject average is 0, set the entire chart on 100% red
+                    data: subjectAverages,
+                    // Set the same color as the label for every subject depending on the average
+                    backgroundColor: function (context) {
+                        if (context.dataset.data[context.dataIndex] > 6.0) {
+                            return '#1cc88a';
+                        }
+                        else if (context.dataset.data[context.dataIndex] == 6.0) {
+                            return '#36b9cc';
+                        }
+                        else if (context.dataset.data[context.dataIndex] >= 5.0) {
+                            return '#36b9cc';
+                        }
+                        else if (context.dataset.data[context.dataIndex] >= 4.0) {
+                            return '#f6c23e';
+                        }
+                        else if (context.dataset.data[context.dataIndex] == 0) {
+                            return '#e74a3b';
+                        }
+                        else {
+                            return '#e74a3b';
+                        }
+                    }
                 }],
             },
             options: {
                 maintainAspectRatio: false,
                 tooltips: {
-                    backgroundColor: "rgb(255,255,255)",
-                    bodyFontColor: "#858796",
+                    // Set the same color as the label for every subject depending on the average
+                    backgroundColor: function (context) {
+                        if (context.parsed.y > 6.0) {
+                            return '#1cc88a';
+                        }
+                        else if (context.parsed.y == 6.0) {
+                            return '#36b9cc';
+                        }
+                        else if (context.parsed.y >= 5.0) {
+                            return '#36b9cc';
+                        }
+                        else if (context.parsed.y >= 4.0) {
+                            return '#f6c23e';
+                        }
+                        else if (context.parsed.y == 0) {
+                            return '#e74a3b';
+                        }
+                        else {
+                            return '#e74a3b';
+                        }
+                    },
+                    bodyFontColor: "#fff",
                     borderColor: '#dddfeb',
                     borderWidth: 1,
                     xPadding: 15,
@@ -109,7 +196,7 @@ if (window.location.pathname == "/dashboard.html") {
                 // Label for subject
                 subject.className = "small font-weight-bold";
                 subject.innerHTML = `
-                    ${subjects[i].name}<span class="float-right">${subjects[i].average}%</span>
+                    ${subjects[i].name}<span class="float-right">Average: ${subjects[i].average}</span>
                 `;
 
                 // Progress bar container
@@ -119,19 +206,30 @@ if (window.location.pathname == "/dashboard.html") {
                 bar.className = "progress-bar";
 
                 // Set progress bar color
-                if(subjects[i].average >= 60) {
+                if (subjects[i].average > 6.0) {
                     bar.className += " bg-success";
-                } else if(subjects[i].average >= 50) {
+                }
+                else if (subjects[i].average == 6.0) {
+                    bar.className += " bg-primary";
+                }
+                else if (subjects[i].average >= 5.0) {
+                    bar.className += " bg-info";
+                }
+                else if (subjects[i].average >= 4.0) {
                     bar.className += " bg-warning";
-                } else {
+                }
+                else if (subjects[i].average == 0) {
+                    bar.className += " bg-info";
+                }
+                else {
                     bar.className += " bg-danger";
                 }
 
                 // Set progress bar width
-                bar.style = `width:${subjects[i].average}%`;
+                bar.style = `width:${subjects[i].average*10}%`;
                 bar.ariaValueNow = subjects[i].average;
                 bar.ariaValueMin = "0";
-                bar.ariaValueMax = "100";
+                bar.ariaValueMax = "10";
                 bar.role = "progressbar";
 
                 // Append elements
