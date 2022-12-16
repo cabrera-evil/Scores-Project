@@ -65,10 +65,40 @@ const usersPatch = async (req, res = response) => {
     // Add new subject
     if (subjects) {
         let flag = false;
+        
         // Check if subject already exists
         user.subjects.forEach((subject) => {
             if (subject.id == subjects[0].id) {
                 flag = true;
+
+                // Update subject times
+                if (subjects[0].times > 1) {
+                    const failed_attempts = [
+                        {
+                            times: subject.times,
+                            average: subject.average
+                        }
+                    ];
+
+                    // Add a new object into the array
+                    subject.failed_attempts = subject.failed_attempts ? subject.failed_attempts.concat(failed_attempts) : failed_attempts;
+                    
+                    // Update times and average
+                    subject.times = subjects[0].times;
+                    subject.average = subjects[0].average ? subjects[0].average : 0;
+                    subject.evaluations = subjects[0].evaluations ? subjects[0].evaluations : [];
+                }
+
+                // Update current subject
+                if (subject) {
+                    subject.current = subjects[0].current;
+                }
+
+                // Delete subject
+                if (subjects[0].delete) {
+                    const index = user.subjects.indexOf(subject);
+                    user.subjects.splice(index, 1);
+                }
             }
         })
         // If there's no subject with the same id, add it
@@ -87,33 +117,6 @@ const usersPatch = async (req, res = response) => {
             }
             user.subjects.push(newSubject);
         };
-        // Find his subject per id
-        const subject = await user.subjects.find(subject => subject.id == subjects[0].id);
-        if (subject) {
-            if (subjects[0].times > 1) {
-                const failed_attempts = [
-                    {
-                        times: subject.times,
-                        average: subject.average
-                    }
-                ];
-                // Add a new object into the array
-                subject.failed_attempts = subject.failed_attempts ? subject.failed_attempts.concat(failed_attempts) : failed_attempts;
-                // Update times and average
-                subject.times = subjects[0].times;
-                subject.average = subjects[0].average ? subjects[0].average : 0;
-                subject.evaluations = subjects[0].evaluations ? subjects[0].evaluations : [];
-            }
-        }
-        // Update current subject
-        if (subject) {
-            subject.current = subjects[0].current;
-        }
-        // Delete subject
-        if (subjects[0].delete) {
-            const index = user.subjects.indexOf(subject);
-            user.subjects.splice(index, 1);
-        }
     }
 
     // Add new evaluation
@@ -122,8 +125,9 @@ const usersPatch = async (req, res = response) => {
         for (let i = 0; i < evaluations.length; i++) {
             const subject = await user.subjects.find(subject => subject.id == evaluations[i].subject_id);
             if (subject) {
-                // Check if evaluation already exists, update it
                 let flag = false;
+
+                // Check if evaluation already exists
                 subject.evaluations.forEach((evaluation) => {
                     if (evaluation.id == evaluations[i].id) {
                         flag = true;
@@ -142,7 +146,7 @@ const usersPatch = async (req, res = response) => {
                                 subject.approved = false;
                             }
                         }
-                        
+
                         // Update evaluation grade
                         evaluation.grade = evaluations[i].grade ? evaluations[i].grade : 0;
 
