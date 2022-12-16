@@ -186,7 +186,7 @@ const usersPatch = async (req, res = response) => {
     }
 
     // Update user's data
-    else {
+    if(req.body.password) {
         // Update user's data
         // Encrypt password
         const salt = bcrypt.genSaltSync();
