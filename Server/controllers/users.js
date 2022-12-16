@@ -76,7 +76,8 @@ const usersPatch = async (req, res = response) => {
                     const failed_attempts = [
                         {
                             times: subject.times,
-                            average: subject.average
+                            average: subject.average,
+                            evaluations: subject.evaluations
                         }
                     ];
 
@@ -236,9 +237,11 @@ const calculateCum = (subjects) => {
     let uv = 0;
 
     subjects.forEach((subject) => {
-        if (subject.approved) {
-            cum += subject.average * subject.uv;
-            uv += subject.uv;
+        if (subject.approved || !subject.current) {
+            if (!subject.failed_attempts) {
+                cum += subject.average * subject.uv;
+                uv += subject.uv;
+            }
         }
     })
 
