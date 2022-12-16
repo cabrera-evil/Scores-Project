@@ -122,12 +122,11 @@ const usersPatch = async (req, res = response) => {
         for (let i = 0; i < evaluations.length; i++) {
             const subject = await user.subjects.find(subject => subject.id == evaluations[i].subject_id);
             if (subject) {
-                // Check if evaluation already exists
+                // Check if evaluation already exists, update it
                 let flag = false;
                 subject.evaluations.forEach((evaluation) => {
                     if (evaluation.id == evaluations[i].id) {
                         flag = true;
-                        const evaluation = subject.evaluations.find(evaluation => evaluation.id == evaluations[i].id);
 
                         // Delete evaluation
                         if (evaluations[i].delete) {
@@ -156,9 +155,8 @@ const usersPatch = async (req, res = response) => {
                             subject.approved = false;
                         }
                     }
-                }
-                )
-                // If there's no evaluation with the same name, add it
+                })
+                // If there's no evaluation with the same id, add it
                 if (!flag) {
                     const newEvaluation = {
                         id: uuidv4(),
