@@ -68,7 +68,7 @@ const facultyPatch = async (req, res = response) => {
     if (subjects) {
         // Verify if the subjects exist
         const subjectsDB = await subjectExistByName(subjects[0].name);
-        
+
         if (!subjectsDB) {
             subjects.forEach(subject => {
                 const newSubject = {
@@ -94,22 +94,24 @@ const facultyPatch = async (req, res = response) => {
 
     // Add new careers
     if (careers) {
-        // Verify if career exist
-        const careerDB = await careerExistByName(careers[0].name);
-        if (!careerDB) {
-            careers.forEach(career => {
-                const newCareer = {
-                    id: uuidv4(),
-                    name: career.name,
-                    subjects: career.subjects ? career.subjects : [],
-                }
-                faculty.careers.push(newCareer);
-            });
-        }
-        else {
-            return res.status(400).json({
-                msg: `The career ${careers[0].name} already exist in the database`
-            });
+        for (i = 0; i < careers.length; i++) {
+            // Verify if career exist
+            const careerDB = await careerExistByName(careers[i].name);
+            if (!careerDB) {
+                careers.forEach(career => {
+                    const newCareer = {
+                        id: uuidv4(),
+                        name: career.name,
+                        subjects: career.subjects ? career.subjects : [],
+                    }
+                    faculty.careers.push(newCareer);
+                });
+            }
+            else {
+                return res.status(400).json({
+                    msg: `The career ${careers[0].name} already exist in the database`
+                });
+            }
         }
     }
 

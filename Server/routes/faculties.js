@@ -4,13 +4,11 @@ const { check } = require("express-validator");
 const { validateFields, validateJWT } = require("../middlewares");
 
 const {
-    facultyExistByID,
 } = require("../helpers/db-validators");
 
 const {
     facultyGet,
     facultyPost,
-    facultyPut,
     facultyPatch,
     facultyDelete,
 } = require("../controllers/faculties");
