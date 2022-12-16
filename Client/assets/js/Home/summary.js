@@ -31,19 +31,14 @@ if (window.location.pathname == "/dashboard.html") {
 
     // Get user's subjects improve
     function getImprove(subjects) {
-        let lowest = subjects[0];
-        let subject = "";
-
-        subjects.forEach(sub => {
-            if (sub.average < lowest.average) {
-                lowest = sub.average;
-                subject = sub.name;
+        // Find the user subject with lowest average and with current status true
+        for (let i = 1; i < subjects.length; i++) {
+            for(let j = 0; j <= i; j++){
+                if(subjects[i].average < subjects[j].average && subjects[i].current == true){
+                    const lblImprove = document.getElementById('user-improve');
+                    lblImprove.innerText = subjects[i].name;
+                }
             }
-            else if(sub.average == lowest.average){
-                subject = lowest.name;
-            }
-        });
-        const lblImprove = document.getElementById('user-improve');
-        lblImprove.innerText = subject;
+        }
     }
 }
