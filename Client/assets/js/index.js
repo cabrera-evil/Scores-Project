@@ -70,25 +70,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // Get token from local storage
   const token = localStorage.getItem('token');
   const admin = document.getElementById('admin-panel');
-  
+
   // Select User Name label and update with logged user's data
   if (token) {
     // Set user role
     const role = JSON.parse(localStorage.getItem('user')).role;
 
-    // Display admin panel if user is admin
-    if (role == 'ADMIN_ROLE') {
-      admin.style.display = 'block';
-      document.getElementById('addons').style.display = 'block';
-    }
-    else {
-      admin.style.display = 'none';
-      document.getElementById('addons').style.display = 'none';
-    }
-
     // Redirect to dashboard if we have a token (it's already logged)
     if (window.location.pathname == '/index.html' || window.location.pathname == '/register.html' || window.location.pathname == '/forgot.html') {
       window.location.href = '/../../dashboard.html'
+
+      // Display admin panel if user is admin
+      if (role == 'ADMIN_ROLE') {
+        admin.style.display = 'block';
+        document.getElementById('addons').style.display = 'block';
+      }
+      else {
+        admin.style.display = 'none';
+        document.getElementById('addons').style.display = 'none';
+      }
     }
 
     // Set user data in header

@@ -194,8 +194,8 @@ if (window.location.pathname === '/evaluations.html') {
             const newGrade = tr.children[3].children[0].value;
 
             const newEvaluation = {
-                subject_id: subject,
                 id: evaluation,
+                subject_id: subject,
                 grade: newGrade
             };
 
@@ -212,6 +212,8 @@ if (window.location.pathname === '/evaluations.html') {
                 })
                 .then(response => {
                     console.log(response);
+                    // Delete input and set a label with the new data
+                    tr.children[3].innerText = newGrade;
                 }
                 )
                 .catch(error => {
@@ -224,8 +226,8 @@ if (window.location.pathname === '/evaluations.html') {
             axios.patch(`${user_url}/${user}`, {
                 evaluations: [
                     {
-                        subject_id: subject,
                         id: evaluation,
+                        subject_id: subject,
                         delete: true
                     }
                 ]

@@ -388,6 +388,9 @@
                                         <option value="Short">Short</option>
                                         <option value="Homework">Homework</option>
                                         <option value="Laboratory">Laboratory</option>
+                                        <option value="Activity">Activity</option>
+                                        <option value="Project">Project</option>
+                                        <option value="Workshop">Workshop</option>
                                     </select>
                                     <div class="invalid-feedback">
                                         What's the evaluation name?
@@ -397,14 +400,8 @@
                                 <!-- Add evaluation number -->
                                 <div class="form-group>
                                 <label for=" number">Evaluation number</label>
-                                    <select id="number" name="number" class="form-control" required>
-                                        <option value="" selected>Select number</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
+                                    <input type="number" class="form-control" id="number" name="number"
+                                        placeholder="Evaluation number" required min="1">
                                     <div class="invalid-feedback">
                                         Invalid number
                                     </div>
@@ -412,14 +409,8 @@
 
                                 <div class="form-group">
                                     <label for="percentage">Percentage</label>
-                                    <select id="percentage" name="percentage" class="form-control" required>
-                                        <option value="" selected>Select percentage</option>
-                                        <option value="5">5%</option>
-                                        <option value="10">10%</option>
-                                        <option value="15">15%</option>
-                                        <option value="20">20%</option>
-                                        <option value="25">25%</option>
-                                    </select>
+                                    <input type="number" class="form-control" id="percentage" name="percentage"
+                                        placeholder="Percentage" required min="5", max="100", step="5">
                                     <div class="invalid-feedback">
                                         Invalid percentage
                                     </div>

@@ -85,6 +85,8 @@ if (window.location.pathname === '/subjects.html') {
 
     // Register subjects request
     async function registerSubjects(data) {
+        console.log(data);
+        console.log(localStorage.getItem('token'));
         axios.patch(`${user_url}/${user}`, {
             subjects: [
                 {
