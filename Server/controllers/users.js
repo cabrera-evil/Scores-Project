@@ -70,8 +70,7 @@ const usersPatch = async (req, res = response) => {
             if (subject.id == subjects[0].id) {
                 flag = true;
             }
-        }
-        )
+        })
         // If there's no subject with the same name, add it
         if (!flag) {
             let subjectData = await getSubjectById(subjects[0].id);
@@ -98,7 +97,7 @@ const usersPatch = async (req, res = response) => {
         if (subject) {
             subject.current = subjects[0].current;
         }
-        if(subjects[0].delete){
+        if (subjects[0].delete) {
             const index = user.subjects.indexOf(subject);
             user.subjects.splice(index, 1);
         }
@@ -107,36 +106,38 @@ const usersPatch = async (req, res = response) => {
     // Add new evaluation
     if (evaluations) {
         // Find his subject per id
-        const subject = user.subjects.find(subject => subject.id == evaluations[0].subject_id);
-        if (subject) {
-            // Check if evaluation already exists
-            let flag = false;
-            subject.evaluations.forEach((evaluation) => {
-                if (evaluation.id == evaluations[0].id) {
-                    flag = true;
+        for (let i = 0; i < evaluations.length; i++) {
+            const subject = user.subjects.find(subject => subject.id == evaluations[i].subject_id);
+            if (subject) {
+                // Check if evaluation already exists
+                let flag = false;
+                subject.evaluations.forEach((evaluation) => {
+                    if (evaluation.id == evaluations[i].id) {
+                        flag = true;
+                    }
                 }
-            }
-            )
-            // If there's no evaluation with the same name, add it
-            if (!flag) {
-                const newEvaluation = {
-                    id: uuidv4(),
-                    subject_id: evaluations[0].subject_id,
-                    name: evaluations[0].name,
-                    percentage: evaluations[0].percentage,
-                    grade: evaluations[0].grade ? evaluations[0].grade : 0,
-                }
-                subject.evaluations.push(newEvaluation);
+                )
+                // If there's no evaluation with the same name, add it
+                if (!flag) {
+                    const newEvaluation = {
+                        id: uuidv4(),
+                        subject_id: evaluations[i].subject_id,
+                        name: evaluations[i].name,
+                        percentage: evaluations[i].percentage,
+                        grade: evaluations[i].grade ? evaluations[i].grade : 0,
+                    }
+                    subject.evaluations.push(newEvaluation);
 
-                // Update subject average
-                subject.average = calculateAverage(subject.evaluations);
-                if (subject.average >= 6) {
-                    subject.approved = true;
-                }
-                else {
-                    subject.approved = false;
-                }
-            };
+                    // Update subject average
+                    subject.average = calculateAverage(subject.evaluations);
+                    if (subject.average >= 6) {
+                        subject.approved = true;
+                    }
+                    else {
+                        subject.approved = false;
+                    }
+                };
+            }
         }
     }
 
@@ -210,7 +211,10 @@ const calculateAverage = (evaluations) => {
         total += evaluation.grade * evaluation.percentage;
     })
 
-    return total / 100;
+    // round total to 2 decimals
+    total = (total/100).toFixed(1);
+
+    return total;
 }
 
 // Calculate CUM
@@ -218,17 +222,17 @@ const calculateCum = (subjects) => {
     let cum = 0;
     let uv = 0;
 
-    if (subjects.approved) {
-        subjects.forEach((subject) => {
+    subjects.forEach((subject) => {
+        if (subject.approved) {
             cum += subject.average * subject.uv;
             uv += subject.uv;
-        });
-        if (uv > 0) {
-            return cum / uv;
         }
-    }
+    })
 
-    return 0;
+    // round total to 2 decimals
+    cum = (cum/uv).toFixed(2);
+
+    return cum;
 }
 
 module.exports = {
