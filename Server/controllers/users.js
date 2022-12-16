@@ -71,10 +71,9 @@ const usersPatch = async (req, res = response) => {
                 flag = true;
             }
         })
-        // If there's no subject with the same name, add it
+        // If there's no subject with the same id, add it
         if (!flag) {
             let subjectData = await getSubjectById(subjects[0].id);
-
             const newSubject = {
                 id: subjects[0].id,
                 name: subjectData.name,
@@ -88,27 +87,10 @@ const usersPatch = async (req, res = response) => {
             }
             user.subjects.push(newSubject);
         };
-    }
-
-    // Edit subject status
-    if (subjects) {
         // Find his subject per id
         const subject = await user.subjects.find(subject => subject.id == subjects[0].id);
         if (subject) {
-            subject.current = subjects[0].current;
-        }
-        if (subjects[0].delete) {
-            const index = user.subjects.indexOf(subject);
-            user.subjects.splice(index, 1);
-        }
-    }
-
-    // Edit subject per times
-    if (subjects) {
-        // Find his subject per id
-        const subject = await user.subjects.find(subject => subject.id == subjects[0].id);
-        if (subject) {
-            if(subjects[0].times > 1){
+            if (subjects[0].times > 1) {
                 const failed_attempts = [
                     {
                         times: subject.times,
@@ -119,9 +101,18 @@ const usersPatch = async (req, res = response) => {
                 subject.failed_attempts = subject.failed_attempts ? subject.failed_attempts.concat(failed_attempts) : failed_attempts;
                 // Update times and average
                 subject.times = subjects[0].times;
-                subject.average = subjects[0].average? subjects[0].average : 0;
-                subject.evaluations = subjects[0].evaluations? subjects[0].evaluations : [];
+                subject.average = subjects[0].average ? subjects[0].average : 0;
+                subject.evaluations = subjects[0].evaluations ? subjects[0].evaluations : [];
             }
+        }
+        // Update current subject
+        if (subject) {
+            subject.current = subjects[0].current;
+        }
+        // Delete subject
+        if (subjects[0].delete) {
+            const index = user.subjects.indexOf(subject);
+            user.subjects.splice(index, 1);
         }
     }
 
@@ -161,10 +152,6 @@ const usersPatch = async (req, res = response) => {
                 };
             }
         }
-    }
-
-    // Edit evaluation grade
-    if (evaluations) {
         // Find his subject per id
         const subject = await user.subjects.find(subject => subject.id == evaluations[0].subject_id);
         if (subject) {
@@ -234,7 +221,7 @@ const calculateAverage = (evaluations) => {
     })
 
     // round total to 2 decimals
-    total = (total/100).toFixed(1);
+    total = (total / 100).toFixed(1);
 
     return total;
 }
@@ -252,7 +239,7 @@ const calculateCum = (subjects) => {
     })
 
     // round total to 2 decimals
-    cum = (cum/uv).toFixed(2);
+    cum = (cum / uv).toFixed(2);
 
     return cum;
 }
