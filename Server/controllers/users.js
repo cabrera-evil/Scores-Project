@@ -65,7 +65,7 @@ const usersPatch = async (req, res = response) => {
     // Add new subject
     if (subjects) {
         let flag = false;
-        
+
         // Check if subject already exists
         user.subjects.forEach((subject) => {
             if (subject.id == subjects[0].id) {
@@ -82,7 +82,7 @@ const usersPatch = async (req, res = response) => {
 
                     // Add a new object into the array
                     subject.failed_attempts = subject.failed_attempts ? subject.failed_attempts.concat(failed_attempts) : failed_attempts;
-                    
+
                     // Update times and average
                     subject.times = subjects[0].times;
                     subject.average = subjects[0].average ? subjects[0].average : 0;
@@ -182,6 +182,15 @@ const usersPatch = async (req, res = response) => {
                 };
             }
         }
+    }
+
+    // Update user's data
+    else {
+        // Update user's data
+        // Encrypt password
+        const salt = bcrypt.genSaltSync();
+        // Update password
+        user.password = bcrypt.hashSync(req.body.password, salt);
     }
 
     // Calculate CUM
