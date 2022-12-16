@@ -103,6 +103,28 @@ const usersPatch = async (req, res = response) => {
         }
     }
 
+    // Edit subject per times
+    if (subjects) {
+        // Find his subject per id
+        const subject = await user.subjects.find(subject => subject.id == subjects[0].id);
+        if (subject) {
+            if(subjects[0].times > 1){
+                const failed_attempts = [
+                    {
+                        times: subject.times,
+                        average: subject.average
+                    }
+                ];
+                // Add a new object into the array
+                subject.failed_attempts = subject.failed_attempts ? subject.failed_attempts.concat(failed_attempts) : failed_attempts;
+                // Update times and average
+                subject.times = subjects[0].times;
+                subject.average = subjects[0].average? subjects[0].average : 0;
+                subject.evaluations = subjects[0].evaluations? subjects[0].evaluations : [];
+            }
+        }
+    }
+
     // Add new evaluation
     if (evaluations) {
         // Find his subject per id
