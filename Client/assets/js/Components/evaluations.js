@@ -169,12 +169,10 @@ if (window.location.pathname === '/evaluations.html') {
         const td = btn.parentElement;
         const tr = td.parentElement;
         const subject = tr.children[0].value;
-        const name = tr.children[1].value;
-        const percentage = tr.children[2].innerText;
+        const evaluation = tr.children[1].value;
         const grade = tr.children[3].innerText;
 
         if (btn.classList.contains('btn-warning')) {
-            console.log('edit');
             // Edit grade by input
             const input = document.createElement('input');
             // Delete old grade
@@ -192,13 +190,12 @@ if (window.location.pathname === '/evaluations.html') {
         }
 
         if (btn.classList.contains('btn-success')) {
-            console.log('success');
             // Get current value on grade
             const newGrade = tr.children[3].children[0].value;
 
             const newEvaluation = {
                 subject_id: subject,
-                id: name,
+                id: evaluation,
                 grade: newGrade
             };
 
@@ -215,7 +212,6 @@ if (window.location.pathname === '/evaluations.html') {
                 })
                 .then(response => {
                     console.log(response);
-                    // window.location.href = '/evaluations.html';
                 }
                 )
                 .catch(error => {
@@ -224,7 +220,29 @@ if (window.location.pathname === '/evaluations.html') {
         }
 
         if (btn.classList.contains('btn-danger')) {
-            console.log('delete');
+            // Delete evaluation
+            axios.patch(`${user_url}/${user}`, {
+                evaluations: [
+                    {
+                        subject_id: subject,
+                        id: evaluation,
+                        delete: true
+                    }
+                ]
+            },
+                {
+                    headers: {
+                        'x-token': localStorage.getItem('token')
+                    }
+                })
+                .then(response => {
+                    console.log(response);
+                }
+                )
+                .catch(error => {
+                    console.log(error);
+                }
+                );
         }
     }
     );

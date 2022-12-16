@@ -1,5 +1,7 @@
-let user_url = "https://scores-project-production.up.railway.app/api/users"
-let faculty_url = "https://scores-project-production.up.railway.app/api/faculties"
+let rail_url = "https://scores-project-production.up.railway.app/"
+let local_url = "http://localhost:3000/"
+let user_url = `${rail_url}api/users`
+let faculty_url = `${rail_url}api/faculties`
 
 // Get user id
 function parseJwt(token) {
@@ -87,7 +89,8 @@ if (window.location.pathname === '/subjects.html') {
             subjects: [
                 {
                     id: data.subjects,
-                    times: data.time
+                    times: data.time,
+                    current: true
                 }
             ]
         },
@@ -147,6 +150,7 @@ if (window.location.pathname === '/subjects.html') {
 
                         // Set data
                         tdName.innerText = userSubjects[i].name;
+                        tdName.value = userSubjects[i].id;
                         tdUv.innerText = userSubjects[i].uv;
                         tdTime.innerText = userSubjects[i].times;
                         tdAverage.innerText = userSubjects[i].average;
@@ -165,4 +169,65 @@ if (window.location.pathname === '/subjects.html') {
             }
             );
     }
+    // Event listener for button click inside table actions
+    table.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        const td = btn.parentElement;
+        const tr = td.parentElement;
+        const subject = tr.children[0].value;
+        const evaluation = tr.children[1].value;
+        const grade = tr.children[3].innerText;
+
+        if (btn.classList.contains('btn-success')) {
+            // Update current status
+            axios.patch(`${user_url}/${user}`, {
+                subjects: [
+                    {
+                        id: subject,
+                        current: false
+                    }
+                ]
+            }, {
+                headers: {
+                    'x-token': localStorage.getItem('token')
+                }
+            })
+                .then(response => {
+                    console.log(response);
+                    window.location.href = '/subjects.html';
+                }
+                )
+                .catch(error => {
+                    console.log(error);
+                }
+                );
+        }
+
+        if (btn.classList.contains('btn-danger')) {
+            // Delete subject
+            axios.patch(`${user_url}/${user}`, {
+                subjects: [
+                    {
+                        id: subject,
+                        delete: true
+                    }
+                ]
+            }, {
+                headers: {
+                    'x-token': localStorage.getItem('token')
+                }
+            })
+                .then(response => {
+                    console.log(response);
+                    window.location.href = '/subjects.html';
+                }
+                )
+                .catch(error => {
+                    console.log(error);
+                }
+                );
+        }
+    });
 }

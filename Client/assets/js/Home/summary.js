@@ -39,7 +39,7 @@ if (window.location.pathname == "/dashboard.html") {
                 lowest = sub.average;
                 subject = sub.name;
             }
-            else{
+            else if(sub.average == lowest.average){
                 subject = lowest.name;
             }
         });

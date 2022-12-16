@@ -91,6 +91,19 @@ const usersPatch = async (req, res = response) => {
         };
     }
 
+    // Edit subject status
+    if (subjects) {
+        // Find his subject per id
+        const subject = await user.subjects.find(subject => subject.id == subjects[0].id);
+        if (subject) {
+            subject.current = subjects[0].current;
+        }
+        if(subjects[0].delete){
+            const index = user.subjects.indexOf(subject);
+            user.subjects.splice(index, 1);
+        }
+    }
+
     // Add new evaluation
     if (evaluations) {
         // Find his subject per id
@@ -120,7 +133,7 @@ const usersPatch = async (req, res = response) => {
                 if (subject.average >= 6) {
                     subject.approved = true;
                 }
-                else{
+                else {
                     subject.approved = false;
                 }
             };
@@ -137,13 +150,27 @@ const usersPatch = async (req, res = response) => {
                 // If there's an evaluation with the same name, update it
                 if (evaluation.id == evaluations[0].id) {
                     const evaluation = subject.evaluations.find(evaluation => evaluation.id == evaluations[0].id);
+                    if (evaluations[0].delete) {
+                        // Delete current evaluation
+                        const index = subject.evaluations.indexOf(evaluation);
+                        subject.evaluations.splice(index, 1);
+
+                        // Update subject average
+                        subject.average = calculateAverage(subject.evaluations);
+                        if (subject.average >= 6) {
+                            subject.approved = true;
+                        }
+                        else {
+                            subject.approved = false;
+                        }
+                    }
                     evaluation.grade = evaluations[0].grade ? evaluations[0].grade : 0;
 
                     subject.average = calculateAverage(subject.evaluations);
                     if (subject.average >= 6) {
                         subject.approved = true;
                     }
-                    else{
+                    else {
                         subject.approved = false;
                     }
                 }
