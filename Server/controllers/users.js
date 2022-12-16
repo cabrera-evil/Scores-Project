@@ -127,7 +127,7 @@ const usersPatch = async (req, res = response) => {
     // Edit evaluation grade
     if (evaluations) {
         // Find his subject per id
-        const subject = user.subjects.find(subject => subject.id == evaluations[0].subject_id);
+        const subject = await user.subjects.find(subject => subject.id == evaluations[0].subject_id);
         if (subject) {
             // Check if evaluation already exists
             let flag = false;
@@ -137,7 +137,7 @@ const usersPatch = async (req, res = response) => {
                 }
             }
             )
-            // If there's no evaluation with the same name, add it
+            // If there's an evaluation with the same name, update it
             if (flag) {
                 const evaluation = subject.evaluations.find(evaluation => evaluation.name == evaluations[0].name);
                 evaluation.grade = evaluations[0].grade ? evaluations[0].grade : 0;
