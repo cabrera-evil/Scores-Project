@@ -42,7 +42,7 @@ const usersPost = async (req, res) => {
             msg: `The career ${user.career} does not exist in the database`
         });
     }
-    else{
+    else {
         user.career_id = await CareerIdByName(user.career);
     }
 
@@ -132,21 +132,18 @@ const usersPatch = async (req, res = response) => {
             // Check if evaluation already exists
             let flag = false;
             subject.evaluations.forEach((evaluation) => {
-                if (evaluation.name == evaluations[0].name) {
-                    flag = true;
+                // If there's an evaluation with the same name, update it
+                if (evaluation.id == evaluations[0].id) {
+                    const evaluation = subject.evaluations.find(evaluation => evaluation.id == evaluations[0].id);
+                    evaluation.grade = evaluations[0].grade ? evaluations[0].grade : 0;
+
+                    subject.average = calculateAverage(subject.evaluations);
+                    if (subject.average >= 6) {
+                        subject.approved = true;
+                    }
                 }
             }
             )
-            // If there's an evaluation with the same name, update it
-            if (flag) {
-                const evaluation = subject.evaluations.find(evaluation => evaluation.name == evaluations[0].name);
-                evaluation.grade = evaluations[0].grade ? evaluations[0].grade : 0;
-
-                subject.average = calculateAverage(subject.evaluations);
-                if (subject.average >= 6) {
-                    subject.approved = true;
-                }
-            };
         }
     }
 
