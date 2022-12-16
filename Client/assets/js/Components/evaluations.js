@@ -56,7 +56,6 @@ if (window.location.pathname === '/evaluations.html') {
         frmEvaluations.classList.add('was-validated');
         const formData = new FormData(frmEvaluations);
         const data = Object.fromEntries(formData);
-        console.log(data);
         await registerEvaluations(data);
     });
 
@@ -66,7 +65,7 @@ if (window.location.pathname === '/evaluations.html') {
             evaluations: [
                 {
                     subject_id: data.subject,
-                    name: `${data.name} ${data.number}`,
+                    name: `${data.name}-${data.number}`,
                     percentage: data.percentage
                 }
             ]
@@ -139,7 +138,9 @@ if (window.location.pathname === '/evaluations.html') {
 
                             // Set data
                             tdSubject.innerText = userEvaluations[i].name;
+                            tdSubject.value = userEvaluations[i].id;
                             tdName.innerText = userEvaluations[i].evaluations[j].name;
+                            tdName.value = userEvaluations[i].evaluations[j].id;
                             tdPercentage.innerText = userEvaluations[i].evaluations[j].percentage;
                             tdGrade.innerText = userEvaluations[i].evaluations[j].grade;
                             tdActions.appendChild(btnSuccess);
@@ -157,5 +158,73 @@ if (window.location.pathname === '/evaluations.html') {
             }
             );
     }
+
+    // Event listener for button click inside table actions
+    table.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        const td = btn.parentElement;
+        const tr = td.parentElement;
+        const subject = tr.children[0].value;
+        const name = tr.children[1].value;
+        const percentage = tr.children[2].innerText;
+        const grade = tr.children[3].innerText;
+
+        if (btn.classList.contains('btn-warning')) {
+            console.log('edit');
+            // Edit grade by input
+            const input = document.createElement('input');
+            // Delete old grade
+            tr.children[3].innerText = '';
+            // Setting input
+            input.type = 'number';
+            input.classList.add('form-control');
+            input.value = grade;
+            input.style.width = '5rem';
+            input.style.marginLeft = '1rem';
+            input.min = 0;
+            input.max = 10;
+            // Append input in grade column
+            tr.children[3].appendChild(input);
+        }
+
+        if (btn.classList.contains('btn-success')) {
+            console.log('success');
+            // Get current value on grade
+            const newGrade = tr.children[3].children[0].value;
+
+            const newEvaluation = {
+                subject_id: subject,
+                id: name,
+                grade: newGrade
+            };
+
+            // Update grade
+            axios.patch(`${user_url}/${user}`, {
+                evaluations: [
+                    newEvaluation
+                ]
+            },
+                {
+                    headers: {
+                        'x-token': localStorage.getItem('token')
+                    }
+                })
+                .then(response => {
+                    console.log(response);
+                    // window.location.href = '/evaluations.html';
+                }
+                )
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+
+        if (btn.classList.contains('btn-danger')) {
+            console.log('delete');
+        }
+    }
+    );
 }
 
