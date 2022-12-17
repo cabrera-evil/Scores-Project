@@ -24,28 +24,8 @@ if (window.location.pathname === '/evaluations.html') {
         getEvaluations(search.value);
     })
 
-    // Axios get user's subjects
-    axios.get(user_url + "?_id=" + user)
-        .then(response => {
-            const subjects = response.data.users[0].subjects;
-            const select = document.getElementById('subject');
-
-            subjects.forEach(subject => {
-                if (subject.current) {
-                    // Register evaluation
-                    const option = document.createElement('option');
-                    option.value = subject.id;
-                    option.innerText = subject.name;
-                    select.appendChild(option);
-
-                    // Search subject evaluation
-                    const optionSearch = document.createElement('option');
-                    optionSearch.value = subject.id;
-                    optionSearch.innerText = subject.name;
-                    search.appendChild(optionSearch);
-                }
-            });
-        });
+    // Get user's subjects
+    userSubjects();
 
     // On submit
     const frmEvaluations = document.getElementById('frm-evaluations');
@@ -60,6 +40,132 @@ if (window.location.pathname === '/evaluations.html') {
         const data = Object.fromEntries(formData);
         await registerEvaluations(data);
     });
+
+    // Get evaluations data
+    async function getEvaluations(subject) {
+        // Delete table data
+        while (table.firstChild) {
+            table.removeChild(table.firstChild);
+        }
+        userEvaluations(subject)
+    }
+
+    // Event listener for button click inside table actions
+    table.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        const td = btn.parentElement;
+        const tr = td.parentElement;
+        const subject = tr.children[0].value;
+        const evaluation = tr.children[1].value;
+        const grade = tr.children[3].innerText;
+
+        if (btn.classList.contains('btn-warning')) {
+            Swal.fire({
+                title: 'Do you want to edit this evaluation?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Edit',
+                denyButtonText: `Don't edit`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    // Edit grade by input
+                    const input = document.createElement('input');
+                    // Delete old grade
+                    if (tr.children[3].innerText != '') {
+                        tr.children[3].innerText = '';
+                        // Setting input
+                        input.type = 'number';
+                        input.classList.add('form-control');
+                        input.value = grade;
+                        input.style.width = '5rem';
+                        input.style.marginLeft = '1rem';
+                        input.min = 0;
+                        input.max = 10;
+                        // Append input in grade column
+                        tr.children[3].appendChild(input);
+                    }
+                } else if (result.isDenied) {
+                    Swal.fire('Subject not edited', '', 'info')
+                }
+            })
+        }
+
+        if (btn.classList.contains('btn-success')) {
+            Swal.fire({
+                title: 'Do you want to save the changes?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                denyButtonText: `Don't save`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    // Get current value on grade
+                    const newGrade = tr.children[3].children[0].value;
+
+                    const newEvaluation = {
+                        id: evaluation,
+                        subject_id: subject,
+                        grade: newGrade
+                    };
+                    updateEvaluationGrade(newEvaluation);
+                    // Delete input and set a label with the new data
+                    tr.children[3].innerText = newGrade;
+                } else if (result.isDenied) {
+                    Swal.fire('Changes are not saved', '', 'info')
+                }
+            })
+        }
+
+        if (btn.classList.contains('btn-danger')) {
+            Swal.fire({
+                title: 'Do you want to delete this evaluation?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Delete',
+                denyButtonText: `Don't delete`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    deleteEvaluation(evaluation);
+                    tr.remove();
+                } else if (result.isDenied) {
+                    Swal.fire('Evaluation not deleted', '', 'info')
+                }
+            })
+        }
+    }
+    );
+
+    // Requests
+
+    // Get user's subjects
+    async function userSubjects() {
+        axios.get(user_url + "?_id=" + user)
+            .then(response => {
+                const subjects = response.data.users[0].subjects;
+                const select = document.getElementById('subject');
+
+                subjects.forEach(subject => {
+                    if (subject.current) {
+                        // Register evaluation
+                        const option = document.createElement('option');
+                        option.value = subject.id;
+                        option.innerText = subject.name;
+                        select.appendChild(option);
+
+                        // Search subject evaluation
+                        const optionSearch = document.createElement('option');
+                        optionSearch.value = subject.id;
+                        optionSearch.innerText = subject.name;
+                        search.appendChild(optionSearch);
+                    }
+                });
+            });
+    }
 
     // Register evaluations request
     async function registerEvaluations(data) {
@@ -95,13 +201,8 @@ if (window.location.pathname === '/evaluations.html') {
             });
     }
 
-    // Get evaluations data
-    async function getEvaluations(subject) {
-        // Delete table data
-        while (table.firstChild) {
-            table.removeChild(table.firstChild);
-        }
-
+    // Get user's evaluation by subject
+    async function userEvaluations(subject) {
         // Get user's evaluations by user subject
         axios.get(`${user_url}?id=${user}`)
             .then(response => {
@@ -176,153 +277,71 @@ if (window.location.pathname === '/evaluations.html') {
             );
     }
 
-    // Event listener for button click inside table actions
-    table.addEventListener('click', (e) => {
-        const btn = e.target.closest('button');
-        if (!btn) return;
-
-        const td = btn.parentElement;
-        const tr = td.parentElement;
-        const subject = tr.children[0].value;
-        const evaluation = tr.children[1].value;
-        const grade = tr.children[3].innerText;
-
-        if (btn.classList.contains('btn-warning')) {
-            Swal.fire({
-                title: 'Do you want to edit this evaluation?',
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: 'Edit',
-                denyButtonText: `Don't edit`,
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    // Edit grade by input
-                    const input = document.createElement('input');
-                    // Delete old grade
-                    if (tr.children[3].innerText != '') {
-                        tr.children[3].innerText = '';
-                        // Setting input
-                        input.type = 'number';
-                        input.classList.add('form-control');
-                        input.value = grade;
-                        input.style.width = '5rem';
-                        input.style.marginLeft = '1rem';
-                        input.min = 0;
-                        input.max = 10;
-                        // Append input in grade column
-                        tr.children[3].appendChild(input);
-                    }
-                } else if (result.isDenied) {
-                    Swal.fire('Subject not edited', '', 'info')
+    // Update evaluation grade
+    async function updateEvaluationGrade(newEvaluation) {
+        // Update grade
+        axios.patch(`${user_url}/${user}`, {
+            evaluations: [
+                newEvaluation
+            ]
+        },
+            {
+                headers: {
+                    'x-token': localStorage.getItem('token')
                 }
             })
-        }
-
-        if (btn.classList.contains('btn-success')) {
-            Swal.fire({
-                title: 'Do you want to save the changes?',
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: 'Save',
-                denyButtonText: `Don't save`,
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    // Get current value on grade
-                    const newGrade = tr.children[3].children[0].value;
-
-                    const newEvaluation = {
-                        id: evaluation,
-                        subject_id: subject,
-                        grade: newGrade
-                    };
-
-                    // Update grade
-                    axios.patch(`${user_url}/${user}`, {
-                        evaluations: [
-                            newEvaluation
-                        ]
-                    },
-                        {
-                            headers: {
-                                'x-token': localStorage.getItem('token')
-                            }
-                        })
-                        .then(response => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Grade successfully updated',
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                            // Delete input and set a label with the new data
-                            tr.children[3].innerText = newGrade;
-                        }
-                        )
-                        .catch(error => {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Something went wrong!',
-                            })
-                        });
-                } else if (result.isDenied) {
-                    Swal.fire('Changes are not saved', '', 'info')
-                }
-            })
-        }
-
-        if (btn.classList.contains('btn-danger')) {
-            Swal.fire({
-                title: 'Do you want to delete this evaluation?',
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: 'Delete',
-                denyButtonText: `Don't delete`,
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    // Delete evaluation
-                    axios.patch(`${user_url}/${user}`, {
-                        evaluations: [
-                            {
-                                id: evaluation,
-                                subject_id: subject,
-                                delete: true
-                            }
-                        ]
-                    },
-                        {
-                            headers: {
-                                'x-token': localStorage.getItem('token')
-                            }
-                        })
-                        .then(response => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Evaluation successfully deleted',
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                            // Delete row
-                            tr.remove();
-                        }
-                        )
-                        .catch(error => {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Something went wrong!',
-                            })
-                        }
-                        );
-                } else if (result.isDenied) {
-                    Swal.fire('Evaluation not deleted', '', 'info')
-                }
-            })
-        }
+            .then(response => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Grade successfully updated',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+            )
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!',
+                })
+            });
     }
-    );
+
+    // Delete evaluation
+    async function deleteEvaluation(evaluation) {
+        // Delete evaluation
+        axios.patch(`${user_url}/${user}`, {
+            evaluations: [
+                {
+                    id: evaluation,
+                    subject_id: subject,
+                    delete: true
+                }
+            ]
+        },
+            {
+                headers: {
+                    'x-token': localStorage.getItem('token')
+                }
+            })
+            .then(response => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Evaluation successfully deleted',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+            )
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!',
+                })
+            }
+            );
+    }
 }
 
