@@ -12,7 +12,7 @@ function parseJwt(token) {
     }).join(''));
 
     return JSON.parse(jsonPayload);
-} 
+}
 if (window.location.pathname === '/subjects.html') {
     const user = parseJwt(localStorage.getItem('token')).uid;
     const career_id = JSON.parse(localStorage.getItem('user')).career_id;
@@ -85,8 +85,6 @@ if (window.location.pathname === '/subjects.html') {
 
     // Register subjects request
     async function registerSubjects(data) {
-        console.log(data);
-        console.log(localStorage.getItem('token'));
         axios.patch(`${user_url}/${user}`, {
             subjects: [
                 {
@@ -102,11 +100,19 @@ if (window.location.pathname === '/subjects.html') {
                 }
             })
             .then(response => {
-                console.log(response);
-                window.location.href = '/subjects.html';
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Subject successfully registered',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             })
             .catch(error => {
-                console.log(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!',
+                })
             });
     }
 
@@ -115,6 +121,12 @@ if (window.location.pathname === '/subjects.html') {
         // Get user's subjects
         axios.get(`${user_url}?id=${user}`)
             .then(response => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Subjects successfully loaded',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
                 let userSubjects = response.data.users[0].subjects;
                 for (let i = 0; i < userSubjects.length; i++) {
                     if (userSubjects[i].current) {
@@ -183,53 +195,98 @@ if (window.location.pathname === '/subjects.html') {
         const grade = tr.children[3].innerText;
 
         if (btn.classList.contains('btn-success')) {
-            // Update current status
-            axios.patch(`${user_url}/${user}`, {
-                subjects: [
-                    {
-                        id: subject,
-                        current: false
-                    }
-                ]
-            }, {
-                headers: {
-                    'x-token': localStorage.getItem('token')
+            Swal.fire({
+                title: 'Do you want to update this subject status?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Update',
+                denyButtonText: `Don't update`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    // Update current status
+                    axios.patch(`${user_url}/${user}`, {
+                        subjects: [
+                            {
+                                id: subject,
+                                current: false
+                            }
+                        ]
+                    }, {
+                        headers: {
+                            'x-token': localStorage.getItem('token')
+                        }
+                    })
+                        .then(response => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Subject status successfully updated',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            window.location.href = '/subjects.html';
+                        }
+                        )
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            })
+                        }
+                        );
+                } else if (result.isDenied) {
+                    Swal.fire('Subject not updated', '', 'info')
                 }
             })
-                .then(response => {
-                    console.log(response);
-                    window.location.href = '/subjects.html';
-                }
-                )
-                .catch(error => {
-                    console.log(error);
-                }
-                );
         }
 
         if (btn.classList.contains('btn-danger')) {
-            // Delete subject
-            axios.patch(`${user_url}/${user}`, {
-                subjects: [
-                    {
-                        id: subject,
-                        delete: true
-                    }
-                ]
-            }, {
-                headers: {
-                    'x-token': localStorage.getItem('token')
+            Swal.fire({
+                title: 'Do you want to delete this subject?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Delete',
+                denyButtonText: `Don't delete`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    // Delete subject
+                    axios.patch(`${user_url}/${user}`, {
+                        subjects: [
+                            {
+                                id: subject,
+                                delete: true
+                            }
+                        ]
+                    }, {
+                        headers: {
+                            'x-token': localStorage.getItem('token')
+                        }
+                    })
+                        .then(response => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Subject successfully deleted',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            // Delete row
+                            tr.remove();
+                        }
+                        )
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            })
+                        }
+                        );
+                } else if (result.isDenied) {
+                    Swal.fire('Subject not deleted', '', 'info')
                 }
             })
-                .then(response => {
-                    console.log(response);
-                    window.location.href = '/subjects.html';
-                }
-                )
-                .catch(error => {
-                    console.log(error);
-                }
-                );
         }
     });
 }

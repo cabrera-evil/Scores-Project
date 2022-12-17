@@ -34,11 +34,20 @@ function registerUser(data) {
         career: data.career
     })
         .then(response => {
-            console.log(response);
+            Swal.fire({
+                    icon: 'success',
+                    title: 'User successfully registered',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             window.location.href = '/index.html';
         })
         .catch(error => {
-            console.log(error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
         });
 }
 

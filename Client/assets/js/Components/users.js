@@ -16,6 +16,12 @@ if (window.location.pathname == '/admin_users.html') {
     // Get all users on table with axios
     axios.get(user_url)
         .then(response => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Users successfully loaded',
+                showConfirmButton: false,
+                timer: 1500
+            })
             let users = response.data.users;
             let table = document.getElementById('users-table');
 
@@ -82,4 +88,11 @@ if (window.location.pathname == '/admin_users.html') {
 
             }
         })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        });
 }
