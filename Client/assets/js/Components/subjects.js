@@ -3,7 +3,7 @@ let local_url = "http://localhost:3000/"
 let user_url = `${rail_url}api/users`
 let faculty_url = `${rail_url}api/faculties`
 
-// Get user id
+// Decode uid from token
 function parseJwt(token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -13,6 +13,8 @@ function parseJwt(token) {
 
     return JSON.parse(jsonPayload);
 }
+
+// SUBJECTS COMPONENT
 if (window.location.pathname === '/subjects.html') {
     const user = parseJwt(localStorage.getItem('token')).uid;
     const career_id = JSON.parse(localStorage.getItem('user')).career_id;
@@ -22,7 +24,7 @@ if (window.location.pathname === '/subjects.html') {
     const table = document.getElementById('subject-table');
 
     // Get user's subjects
-    getSubjects();
+    userSubjects();
 
     // To add new subjects
     year.addEventListener('change', async () => {
@@ -33,39 +35,7 @@ if (window.location.pathname === '/subjects.html') {
                 option.remove();
             }
         });
-
-        // Axios get subjects by career_id
-        axios.get(faculty_url)
-            .then(response => {
-                const subjects = response.data.faculties[0].careers;
-                const select = document.getElementById('subjects');
-
-                subjects.forEach(career => {
-                    if (career.id === career_id) {
-                        career.subjects.forEach(subject => {
-                            if (subject.year == year.value) {
-                                const option = document.createElement('option');
-                                option.value = subject.id;
-                                option.innerText = subject.name;
-                                select.appendChild(option);
-
-                                select.addEventListener('change', () => {
-                                    // Get the selected subject value
-                                    const selected = select.options[select.selectedIndex].value;
-
-                                    // Get the selected subject uv
-                                    career.subjects.forEach(subject => {
-                                        if (subject.id == selected) {
-                                            uv.value = subject.uv;
-                                        }
-                                    }
-                                    );
-                                });
-                            }
-                        });
-                    }
-                });
-            });
+        subjectPerYear();
     });
 
     // On submit
@@ -80,44 +50,59 @@ if (window.location.pathname === '/subjects.html') {
         const formData = new FormData(frmSubjects);
         const data = Object.fromEntries(formData);
         await registerSubjects(data);
-    }
-    );
+    });
 
-    // Register subjects request
-    async function registerSubjects(data) {
-        axios.patch(`${user_url}/${user}`, {
-            subjects: [
-                {
-                    id: data.subjects,
-                    times: data.time,
-                    current: true
-                }
-            ]
-        },
-            {
-                headers: {
-                    'x-token': localStorage.getItem('token')
+    // Event listener for button click inside table actions
+    table.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        const td = btn.parentElement;
+        const tr = td.parentElement;
+        const subject = tr.children[0].value;
+        const evaluation = tr.children[1].value;
+        const grade = tr.children[3].innerText;
+
+        if (btn.classList.contains('btn-success')) {
+            Swal.fire({
+                title: 'Do you want to update this subject status?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Update',
+                denyButtonText: `Don't update`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    updateStatus(subject);
+                } else if (result.isDenied) {
+                    Swal.fire('Subject not updated', '', 'info')
                 }
             })
-            .then(response => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Subject successfully registered',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-            })
-            .catch(error => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!',
-                })
-            });
-    }
+        }
 
-    // Get subjects data
-    async function getSubjects() {
+        if (btn.classList.contains('btn-danger')) {
+            Swal.fire({
+                title: 'Do you want to delete this subject?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Delete',
+                denyButtonText: `Don't delete`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    deleteSubject(subject);
+                    tr.remove();
+                } else if (result.isDenied) {
+                    Swal.fire('Subject not deleted', '', 'info')
+                }
+            })
+        }
+    });
+
+    // Requests
+
+    // Get user subjects
+    async function userSubjects() {
         // Get user's subjects
         axios.get(`${user_url}?id=${user}`)
             .then(response => {
@@ -127,6 +112,7 @@ if (window.location.pathname === '/subjects.html') {
                     showConfirmButton: false,
                     timer: 1500
                 })
+
                 let userSubjects = response.data.users[0].subjects;
                 for (let i = 0; i < userSubjects.length; i++) {
                     if (userSubjects[i].current) {
@@ -183,110 +169,143 @@ if (window.location.pathname === '/subjects.html') {
             }
             );
     }
-    // Event listener for button click inside table actions
-    table.addEventListener('click', (e) => {
-        const btn = e.target.closest('button');
-        if (!btn) return;
 
-        const td = btn.parentElement;
-        const tr = td.parentElement;
-        const subject = tr.children[0].value;
-        const evaluation = tr.children[1].value;
-        const grade = tr.children[3].innerText;
+    // Get subjects per year
+    async function subjectPerYear() {
+        // Axios get subjects by career_id
+        axios.get(faculty_url)
+            .then(response => {
+                const subjects = response.data.faculties[0].careers;
+                const select = document.getElementById('subjects');
 
-        if (btn.classList.contains('btn-success')) {
-            Swal.fire({
-                title: 'Do you want to update this subject status?',
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: 'Update',
-                denyButtonText: `Don't update`,
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    // Update current status
-                    axios.patch(`${user_url}/${user}`, {
-                        subjects: [
-                            {
-                                id: subject,
-                                current: false
+                subjects.forEach(career => {
+                    if (career.id === career_id) {
+                        career.subjects.forEach(subject => {
+                            if (subject.year == year.value) {
+                                const option = document.createElement('option');
+                                option.value = subject.id;
+                                option.innerText = subject.name;
+                                select.appendChild(option);
+
+                                select.addEventListener('change', () => {
+                                    // Get the selected subject value
+                                    const selected = select.options[select.selectedIndex].value;
+
+                                    // Get the selected subject uv
+                                    career.subjects.forEach(subject => {
+                                        if (subject.id == selected) {
+                                            uv.value = subject.uv;
+                                        }
+                                    }
+                                    );
+                                });
                             }
-                        ]
-                    }, {
-                        headers: {
-                            'x-token': localStorage.getItem('token')
-                        }
-                    })
-                        .then(response => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Subject status successfully updated',
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                            window.location.href = '/subjects.html';
-                        }
-                        )
-                        .catch(error => {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Something went wrong!',
-                            })
-                        }
-                        );
-                } else if (result.isDenied) {
-                    Swal.fire('Subject not updated', '', 'info')
+                        });
+                    }
+                });
+            });
+    }
+
+    // Register subjects
+    async function registerSubjects(data) {
+        axios.patch(`${user_url}/${user}`, {
+            subjects: [
+                {
+                    id: data.subjects,
+                    times: data.time,
+                    current: true
+                }
+            ]
+        },
+            {
+                headers: {
+                    'x-token': localStorage.getItem('token')
                 }
             })
-        }
-
-        if (btn.classList.contains('btn-danger')) {
-            Swal.fire({
-                title: 'Do you want to delete this subject?',
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: 'Delete',
-                denyButtonText: `Don't delete`,
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    // Delete subject
-                    axios.patch(`${user_url}/${user}`, {
-                        subjects: [
-                            {
-                                id: subject,
-                                delete: true
-                            }
-                        ]
-                    }, {
-                        headers: {
-                            'x-token': localStorage.getItem('token')
-                        }
-                    })
-                        .then(response => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Subject successfully deleted',
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                            // Delete row
-                            tr.remove();
-                        }
-                        )
-                        .catch(error => {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Something went wrong!',
-                            })
-                        }
-                        );
-                } else if (result.isDenied) {
-                    Swal.fire('Subject not deleted', '', 'info')
-                }
+            .then(response => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Subject successfully registered',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             })
-        }
-    });
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!',
+                })
+            });
+    }
+
+    // Update subject status
+    async function updateStatus(subject) {
+        // Update current status
+        axios.patch(`${user_url}/${user}`, {
+            subjects: [
+                {
+                    id: subject,
+                    current: false
+                }
+            ]
+        }, {
+            headers: {
+                'x-token': localStorage.getItem('token')
+            }
+        })
+            .then(response => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Subject status successfully updated',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                window.location.href = '/subjects.html';
+            }
+            )
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!',
+                })
+            }
+            );
+    }
+
+    // Delete subject
+    async function deleteSubject(subject) {
+        // Delete subject
+        axios.patch(`${user_url}/${user}`, {
+            subjects: [
+                {
+                    id: subject,
+                    delete: true
+                }
+            ]
+        }, {
+            headers: {
+                'x-token': localStorage.getItem('token')
+            }
+        })
+            .then(response => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Subject successfully deleted',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+            )
+            .catch(error => {
+                console.log(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!',
+                })
+            }
+            );
+    }
 }
