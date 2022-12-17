@@ -51,7 +51,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="dashboard.html">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -80,7 +80,7 @@
             </li>
 
             <!-- Nav Item - Tables Collapse Menu -->
-            <li class="nav-item" id="admin-panel">
+            <li class="nav-item active" id="admin-panel">
                 <!-- Divider -->
                 <hr class="sidebar-divider">
 
@@ -371,9 +371,10 @@
                                 <div class="invalid-feedback">
                                     What's your career?
                                 </div>
+                            </div>
 
-                                <button type="submit" class="btn btn-primary" id="btn-add">Add</button>
-                                <button type="submit" class="btn btn-primary" id="btn-delete">Clear</button>
+                            <button type="submit" class="btn btn-primary" id="btn-add">Add</button>
+                            <button type="submit" class="btn btn-primary" id="btn-clear">Clear</button>
                         </form>
 
                         <div class="card-body">
@@ -405,6 +406,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                <button type="submit" class="btn btn-success" id="btn-reload">Reload</button>
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,5 @@
 /*!
- * Start Bootstrap - UCA SCORES v4.1.3 (https://startbootstrap.com/theme/sb-admin-2)
+ * Start Bootstrap - SB Admin 2 v4.1.3 (https://startbootstrap.com/theme/sb-admin-2)
  * Copyright 2013-2021 Start Bootstrap
  * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-sb-admin-2/blob/master/LICENSE)
  */
@@ -10,7 +10,7 @@
  * Copyright 2011-2021 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
-:root {
+ :root {
   --blue: #4e73df;
   --indigo: #6610f2;
   --purple: #6f42c1;
@@ -10861,24 +10861,21 @@ a:focus {
 }
 
 .bg-login-image {
-  background: url("/assets/img/undraw_access_account_login.svg");
+  background: url("https://source.unsplash.com/K4mSJ7kc0As/600x800");
   background-position: center;
-  background-size: contain;
-  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .bg-register-image {
-  background: url("/assets/img/undraw_secure__register.svg");
+  background: url("https://source.unsplash.com/Mv9hjnEUHR4/600x800");
   background-position: center;
-  background-size: contain;
-  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .bg-password-image {
-  background: url("/img//undraw_forgot_password.svg");
+  background: url("https://source.unsplash.com/oWTW-jNGl9I/600x800");
   background-position: center;
-  background-size: contain;
-  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 form.user .custom-checkbox.small label {
@@ -11284,7 +11281,7 @@ body.sidebar-toggled footer.sticky-footer {
 }
 
 /* Style inputs with type="text", select elements and textareas */
-input[type=text], select, textarea {
+#contact-area {
   width: 100%; /* Full width */
   padding: 12px; /* Some padding */ 
   border: 1px solid #ccc; /* Gray border */
@@ -11294,36 +11291,3 @@ input[type=text], select, textarea {
   margin-bottom: 16px; /* Bottom margin */
   resize: vertical /* Allow the user to vertically resize the textarea (not horizontally) */
 }
-
-/* Style the submit button with a specific background color etc */
-input[type=submit] {
-  background-color: #4e73df;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-/* When moving the mouse over the submit button, add a darker green color */
-input[type=submit]:hover {
-  background-color: #344C94;
-}
-
-button#btn-cancel {
-  background-color: #ff3333;
-}
-
-button#btn-cancel:hover {
-  background-color: #cc0000;
-}
-
-div#btn-section{
-  position: absolute;
-}
-
-div#btn-section button {
-  position: relative;
-  top: 2rem;
-}
-

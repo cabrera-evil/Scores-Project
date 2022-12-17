@@ -176,17 +176,19 @@ if (window.location.pathname === '/evaluations.html') {
             // Edit grade by input
             const input = document.createElement('input');
             // Delete old grade
-            tr.children[3].innerText = '';
-            // Setting input
-            input.type = 'number';
-            input.classList.add('form-control');
-            input.value = grade;
-            input.style.width = '5rem';
-            input.style.marginLeft = '1rem';
-            input.min = 0;
-            input.max = 10;
-            // Append input in grade column
-            tr.children[3].appendChild(input);
+            if (tr.children[3].innerText != '') {
+                tr.children[3].innerText = '';
+                // Setting input
+                input.type = 'number';
+                input.classList.add('form-control');
+                input.value = grade;
+                input.style.width = '5rem';
+                input.style.marginLeft = '1rem';
+                input.min = 0;
+                input.max = 10;
+                // Append input in grade column
+                tr.children[3].appendChild(input);
+            }
         }
 
         if (btn.classList.contains('btn-success')) {
@@ -239,6 +241,8 @@ if (window.location.pathname === '/evaluations.html') {
                 })
                 .then(response => {
                     console.log(response);
+                    // Delete row
+                    tr.remove();
                 }
                 )
                 .catch(error => {

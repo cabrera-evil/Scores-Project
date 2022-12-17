@@ -250,10 +250,11 @@ if (window.location.pathname == "/dashboard.html") {
     function setOverview(subjectNames, subjectAverages) {
         let ctx_area = document.getElementById("myAreaChart");
 
+        // Set area chart data
         let myAreaChart = new Chart(ctx_area, {
             type: 'line',
             data: {
-                labels: subjectNames,
+                labels: subjectNames.map((subject) => subject.substring(0, 3)),
                 datasets: [{
                     label: "Average",
                     lineTension: 0.3,
