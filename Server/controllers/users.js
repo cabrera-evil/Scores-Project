@@ -186,12 +186,16 @@ const usersPatch = async (req, res = response) => {
     }
 
     // Update user's data
-    if(req.body.password) {
-        // Update user's data
+    if(req.body.password) {        
         // Encrypt password
         const salt = bcrypt.genSaltSync();
         // Update password
         user.password = bcrypt.hashSync(req.body.password, salt);
+    }
+    if(req.body.role){
+        if(role == 'ADMIN_ROLE' || role == 'USER_ROLE'){
+            user.role = req.body.role;
+        }        
     }
 
     // Calculate CUM
