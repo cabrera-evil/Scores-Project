@@ -1,11 +1,23 @@
 {
   "name": "scores-api",
   "version": "0.0.0",
-  "private": true,
+  "description": "Discord bot",
+  "main": "./bin/www",
+  "private":"true",
   "scripts": {
-    "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "start": "node .",
+    "dev": "nodemon ."
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cabrera-evil/Scores-Project.git"
+  },
+  "author": "cabrera-evil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cabrera-evil/Scores-Project/issues"
+  },
+  "homepage": "https://github.com/cabrera-evil/Scores-Project#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.6",
