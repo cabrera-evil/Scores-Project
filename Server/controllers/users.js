@@ -70,6 +70,11 @@ const usersPatch = async (req, res = response) => {
         user.subjects.forEach((subject) => {
             if (subject.id == subjects[0].id) {
                 flag = true;
+                
+                // If the subject already has failed attempts, add one more in time
+                if (subject.failed_attempts) {
+                    subjects[0].times = subject.failed_attempts.length + 1;
+                }
 
                 // Update subject times
                 if (subjects[0].times > 1) {
@@ -149,7 +154,12 @@ const usersPatch = async (req, res = response) => {
                         }
 
                         // Update evaluation grade
-                        evaluation.grade = evaluations[i].grade ? evaluations[i].grade : 0;
+                        if (evaluations[i].grade >= 0 && evaluations[i].grade <= 10)
+                            evaluation.grade = evaluations[i].grade ? evaluations[i].grade : 0;
+                        else
+                            return res.status(400).json({
+                                msg: `The grade ${evaluations[i].grade} is not valid`
+                            });
 
                         // Calculate average
                         subject.average = calculateAverage(subject.evaluations);
@@ -170,7 +180,12 @@ const usersPatch = async (req, res = response) => {
                         percentage: evaluations[i].percentage,
                         grade: evaluations[i].grade ? evaluations[i].grade : 0,
                     }
-                    subject.evaluations.push(newEvaluation);
+                    if (newEvaluation.grade >= 0 && newEvaluation.grade <= 10)
+                        subject.evaluations.push(newEvaluation);
+                    else
+                        return res.status(400).json({
+                            msg: `The grade ${newEvaluation.grade} is not valid`
+                        });
 
                     // Update subject average
                     subject.average = calculateAverage(subject.evaluations);
@@ -186,16 +201,19 @@ const usersPatch = async (req, res = response) => {
     }
 
     // Update user's data
-    if(req.body.password) {        
+    if (req.body.password) {
         // Encrypt password
         const salt = bcrypt.genSaltSync();
         // Update password
         user.password = bcrypt.hashSync(req.body.password, salt);
     }
-    if(req.body.role){
-        if(role == 'ADMIN_ROLE' || role == 'USER_ROLE'){
+    if (req.body.role) {
+        if (validateRole(req.body.role))
             user.role = req.body.role;
-        }        
+        else
+            return res.status(400).json({
+                msg: `The role ${req.body.role} is not valid`
+            });
     }
 
     // Calculate CUM
@@ -220,6 +238,14 @@ const usersDelete = async (req, res = response) => {
 };
 
 // Helper functions
+
+// Validate role
+const validateRole = (role) => {
+    if (role == 'ADMIN_ROLE' || role == 'USER_ROLE')
+        return true;
+    else
+        return false;
+}
 
 // Calculate subject average
 const calculateAverage = (evaluations) => {
