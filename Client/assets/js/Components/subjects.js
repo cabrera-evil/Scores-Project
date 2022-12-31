@@ -212,7 +212,6 @@ if (window.location.pathname === '/subjects.html') {
             subjects: [
                 {
                     id: data.subjects,
-                    times: data.time,
                     current: true
                 }
             ]
