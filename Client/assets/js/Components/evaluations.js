@@ -1,7 +1,7 @@
-let rail_url = "https://scores-project-production.up.railway.app/"
+let deploy_url = "https://morty-api.panificador.link/"
 let local_url = "http://localhost:3000/"
-let user_url = `${rail_url}api/users`
-let faculty_url = `${rail_url}api/faculties`
+let user_url = `${deploy_url}api/users`
+let faculty_url = `${deploy_url}api/faculties`
 
 // Get user id
 function parseJwt(token) {
@@ -47,7 +47,9 @@ if (window.location.pathname === '/evaluations.html') {
         while (table.firstChild) {
             table.removeChild(table.firstChild);
         }
-        userEvaluations(subject)
+        // Show loader
+        if(userEvaluations(subject))
+        document.getElementById('loader').style.display = 'block';
     }
 
     // Event listener for button click inside table actions
@@ -144,7 +146,7 @@ if (window.location.pathname === '/evaluations.html') {
 
     // Get user's subjects
     async function userSubjects() {
-        axios.get(user_url + "?_id=" + user)
+        axios.get(`${user_url}?_id=${user}`)
             .then(response => {
                 const subjects = response.data.users[0].subjects;
                 const select = document.getElementById('subject');
@@ -204,14 +206,10 @@ if (window.location.pathname === '/evaluations.html') {
     // Get user's evaluation by subject
     async function userEvaluations(subject) {
         // Get user's evaluations by user subject
-        axios.get(`${user_url}?id=${user}`)
+        axios.get(`${user_url}?_id=${user}`)
             .then(response => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Evaluations successfully loaded',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
+                // Hide loader when data is loaded
+                document.getElementById('loader').style.display = 'none';
                 let userEvaluations = response.data.users[0].subjects;
 
                 for (let i = 0; i < userEvaluations.length; i++) {

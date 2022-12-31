@@ -1,4 +1,4 @@
-const url = 'https://scores-project-production.up.railway.app/api/auth/login';
+const url = 'https://morty-api.panificador.link/api/auth/login';
 
 // Login request
 const login = async (email, password) => {

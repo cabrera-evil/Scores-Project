@@ -1,5 +1,5 @@
-let url = 'https://scores-project-production.up.railway.app/api/users';
-let faculty_url = 'https://scores-project-production.up.railway.app/api/faculties';
+let url = 'https://morty-api.panificador.link/api/users';
+let faculty_url = 'https://morty-api.panificador.link/api/faculties';
 
 // On dom load
 document.addEventListener('DOMContentLoaded', () => {

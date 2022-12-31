@@ -1,5 +1,5 @@
-let user_url = "https://scores-project-production.up.railway.app/api/users"
-let faculty_url = "https://scores-project-production.up.railway.app/api/faculties"
+let user_url = "https://morty-api.panificador.link/api/users"
+let faculty_url = "https://morty-api.panificador.link/api/faculties"
 
 // Get user id
 function parseJwt(token) {
@@ -22,12 +22,9 @@ if (window.location.pathname == '/admin_users.html') {
     async function getUsers() {
         axios.get(user_url)
             .then(response => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Users successfully loaded',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
+                // Hide loader when data is loaded
+                document.getElementById('loader').style.display = 'none';
+
                 let users = response.data.users;
                 let table = document.getElementById('users-table');
 

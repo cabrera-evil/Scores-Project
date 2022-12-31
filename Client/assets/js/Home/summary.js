@@ -1,4 +1,4 @@
-let url = "https://scores-project-production.up.railway.app/api/users"
+let url = "https://morty-api.panificador.link/api/users"
 
 // Get user id
 function parseJwt(token) {
@@ -37,6 +37,9 @@ if (window.location.pathname == "/dashboard.html") {
             // Get user's passed subjects
             const approvedSubjects = setPassedSubjects(subjects);
             setOverview(approvedSubjects[0], approvedSubjects[1]);
+
+            // Hide loader
+            document.getElementById('loader').style.display = 'none';
         }
         );
 

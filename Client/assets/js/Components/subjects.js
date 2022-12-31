@@ -1,7 +1,7 @@
-let rail_url = "https://scores-project-production.up.railway.app/"
+let deploy_url = "https://morty-api.panificador.link/"
 let local_url = "http://localhost:3000/"
-let user_url = `${rail_url}api/users`
-let faculty_url = `${rail_url}api/faculties`
+let user_url = `${deploy_url}api/users`
+let faculty_url = `${deploy_url}api/faculties`
 
 // Decode uid from token
 function parseJwt(token) {
@@ -74,6 +74,7 @@ if (window.location.pathname === '/subjects.html') {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     updateStatus(subject);
+                    userSubjects();
                 } else if (result.isDenied) {
                     Swal.fire('Subject not updated', '', 'info')
                 }
@@ -91,7 +92,6 @@ if (window.location.pathname === '/subjects.html') {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     deleteSubject(subject);
-                    tr.remove();
                 } else if (result.isDenied) {
                     Swal.fire('Subject not deleted', '', 'info')
                 }
@@ -103,15 +103,15 @@ if (window.location.pathname === '/subjects.html') {
 
     // Get user subjects
     async function userSubjects() {
+        // If there's any child on table, delete it
+        while (table.firstChild) {
+            table.removeChild(table.firstChild);
+        }
         // Get user's subjects
-        axios.get(`${user_url}?id=${user}`)
+        axios.get(`${user_url}?_id=${user}`)
             .then(response => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Subjects successfully loaded',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
+                // Hide loader when data is loaded
+                document.getElementById('loader').style.display = 'none';
 
                 let userSubjects = response.data.users[0].subjects;
                 for (let i = 0; i < userSubjects.length; i++) {
@@ -229,6 +229,7 @@ if (window.location.pathname === '/subjects.html') {
                     showConfirmButton: false,
                     timer: 1500
                 })
+                userSubjects();
             })
             .catch(error => {
                 Swal.fire({
@@ -296,6 +297,7 @@ if (window.location.pathname === '/subjects.html') {
                     showConfirmButton: false,
                     timer: 1500
                 })
+                userSubjects();
             }
             )
             .catch(error => {

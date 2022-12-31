@@ -120,6 +120,7 @@
 
             <!-- Main Content -->
             <div id="content">
+                <div id="loader" style="display: none;"></div>
 
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -365,7 +366,7 @@
                                 <div class="form-group>
                                 <label for=" number">Evaluation number</label>
                                     <input type="number" class="form-control" id="number" name="number"
-                                        placeholder="Evaluation number" required min="1">
+                                        placeholder="1, 2, 3, 4, 5, etc..." required min="1", max="10">
                                     <div class="invalid-feedback">
                                         Invalid number
                                     </div>
@@ -374,7 +375,7 @@
                                 <div class="form-group">
                                     <label for="percentage">Percentage</label>
                                     <input type="number" class="form-control" id="percentage" name="percentage"
-                                        placeholder="Percentage" required min="5" , max="100" , step="5">
+                                        placeholder="5, 10, 15, etc..." required min="5" , max="100" , step="5">
                                     <div class="invalid-feedback">
                                         Invalid percentage
                                     </div>
