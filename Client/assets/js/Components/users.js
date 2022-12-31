@@ -13,24 +13,94 @@ function parseJwt(token) {
 }
 
 if (window.location.pathname == '/admin_users.html') {
+    const table = document.getElementById('users-table');
     // Get users
     getUsers();
+
+    // Event listener for button click inside table actions
+    table.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        // Get user id
+        const id = btn.closest('tr').querySelector('td').textContent;
+
+        // Edit user role
+        if (btn.classList.contains('btn-warning')) {
+            Swal.fire({
+                title: 'Change user role',
+                input: 'select',
+                inputOptions: {
+                    'ADMIN_ROLE': 'Admin',
+                    'USER_ROLE': 'User'
+                },
+                inputPlaceholder: 'Select a role',
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    return new Promise((resolve) => {
+                        if (value !== '') {
+                            resolve();
+                        } else {
+                            resolve('You need to select a role!');
+                        }
+                    });
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.patch(`${user_url}/${id}`, {
+                        role: result.value
+                    },
+                        {
+                            headers: {
+                                'x-token': localStorage.getItem('token')
+                            }
+                        })
+                        .then(response => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'User role changed!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            getUsers();
+                        }).catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            })
+                        });
+                }
+            }
+            )
+        }
+    });
+
+    // Reload button
+    const reload = document.getElementById('btn-reload');
+    reload.addEventListener('click', () => {
+        getUsers();
+    });
 
     // Requests
 
     // Get users
     async function getUsers() {
+        // If there's any child on table, delete it
+        while (table.firstChild) {
+            table.removeChild(table.firstChild);
+        }
         axios.get(user_url)
             .then(response => {
                 // Hide loader when data is loaded
                 document.getElementById('loader').style.display = 'none';
 
                 let users = response.data.users;
-                let table = document.getElementById('users-table');
 
                 for (let i = 0; i < users.length; i++) {
                     // Set data table
                     const tr = document.createElement('tr');
+                    const tdId = document.createElement('td');
                     const tdName = document.createElement('td');
                     const tdEmail = document.createElement('td');
                     const tdRole = document.createElement('td');
@@ -68,6 +138,7 @@ if (window.location.pathname == '/admin_users.html') {
                     btnDelete.style.marginLeft = '1rem';
 
                     // Set data
+                    tdId.innerHTML = users[i]._id;
                     tdName.innerHTML = users[i].name;
                     tdEmail.innerHTML = users[i].email;
                     tdRole.innerHTML = users[i].role;
@@ -75,6 +146,7 @@ if (window.location.pathname == '/admin_users.html') {
                     tdCUM.innerHTML = users[i].cum;
 
                     // Append data to table
+                    tr.appendChild(tdId);
                     tr.appendChild(tdName);
                     tr.appendChild(tdEmail);
                     tr.appendChild(tdRole);
@@ -88,7 +160,6 @@ if (window.location.pathname == '/admin_users.html') {
                     tdActions.appendChild(btnDelete);
 
                     table.appendChild(tr);
-
                 }
             })
             .catch(error => {
