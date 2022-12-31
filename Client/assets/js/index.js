@@ -67,9 +67,13 @@ function loadScript(url, type = 'text/javascript') {
 
 // On dom load
 document.addEventListener('DOMContentLoaded', () => {
+  // author badge :)
+  var author = '<div style="position: fixed;bottom: 0;right: 20px;background-color: #fff;box-shadow: 0 4px 8px rgba(0,0,0,.05);border-radius: 3px 3px 0 0;font-size: 12px;padding: 5px 10px;">By <a href="https://www.instagram.com/cabrera.evil">@cabrera-evil</a> &nbsp;&bull;&nbsp; <a href="https://www.buymeacoffee.com/cabreraevil">Buy me a Coffee</a></div>';
+  $("body").append(author);
+  
   // Get token from local storage
   const token = localStorage.getItem('token');
-  const admin = document.getElementById('admin-panel');
+  const admin = document.getElementsByClassName('admin-panel');
 
   // Select User Name label and update with logged user's data
   if (token) {
@@ -85,10 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname != 'index.html' || window.location.pathname != 'register.html' || window.location.pathname != 'forgot.html') {
       // Display admin panel if user is admin
       if (role == 'ADMIN_ROLE') {
-        admin.style.display = 'block';
+        for(var i = 0; i < admin.length; i++) {
+          admin[i].style.display = 'block';
+        }
       }
       else {
-        admin.style.display = 'none';
+        for(var i = 0; i < admin.length; i++) {
+          admin[i].style.display = 'none';
+        }
       }
     }
 
@@ -96,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname == '/admin_users.html' && role != 'ADMIN_ROLE') {
       window.location.href = '/../../dashboard.html';
     }
-    
+
     // Set user data in header
     const userName = document.getElementById('lbl-username');
     userName.innerText = JSON.parse(localStorage.getItem('user')).name;

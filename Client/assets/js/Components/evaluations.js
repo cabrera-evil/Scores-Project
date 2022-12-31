@@ -1,7 +1,7 @@
 let deploy_url = "https://morty-api.panificador.link/"
 let local_url = "http://localhost:3000/"
-let user_url = `${local_url}api/users`
-let faculty_url = `${local_url}api/faculties`
+let user_url = `${deploy_url}api/users`
+let faculty_url = `${deploy_url}api/faculties`
 
 // Get user id
 function parseJwt(token) {
