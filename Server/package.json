@@ -5,8 +5,8 @@
   "main": "./bin/www",
   "private":"true",
   "scripts": {
-    "start": "node .",
-    "dev": "nodemon ."
+    "start": "clear && node .",
+    "dev": "clear && nodemon ."
   },
   "repository": {
     "type": "git",

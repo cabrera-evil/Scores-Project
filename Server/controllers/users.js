@@ -70,7 +70,7 @@ const usersPatch = async (req, res = response) => {
         user.subjects.forEach((subject) => {
             if (subject.id == subjects[0].id) {
                 flag = true;
-                
+
                 // If the subject already has failed attempts, add one more in time
                 if (subject.failed_attempts) {
                     subjects[0].times = subject.failed_attempts.length + 1;
@@ -154,12 +154,8 @@ const usersPatch = async (req, res = response) => {
                         }
 
                         // Update evaluation grade
-                        if (evaluations[i].grade >= 0 && evaluations[i].grade <= 10)
+                        if (evaluations[i].grade && evaluations[i].grade >= 0 && evaluations[i].grade <= 10)
                             evaluation.grade = evaluations[i].grade ? evaluations[i].grade : 0;
-                        else
-                            return res.status(400).json({
-                                msg: `The grade ${evaluations[i].grade} is not valid`
-                            });
 
                         // Calculate average
                         subject.average = calculateAverage(subject.evaluations);
@@ -182,10 +178,6 @@ const usersPatch = async (req, res = response) => {
                     }
                     if (newEvaluation.grade >= 0 && newEvaluation.grade <= 10)
                         subject.evaluations.push(newEvaluation);
-                    else
-                        return res.status(400).json({
-                            msg: `The grade ${newEvaluation.grade} is not valid`
-                        });
 
                     // Update subject average
                     subject.average = calculateAverage(subject.evaluations);
@@ -210,17 +202,13 @@ const usersPatch = async (req, res = response) => {
     if (req.body.role) {
         if (validateRole(req.body.role))
             user.role = req.body.role;
-        else
-            return res.status(400).json({
-                msg: `The role ${req.body.role} is not valid`
-            });
     }
 
     // Calculate CUM
     user.cum = calculateCum(user.subjects);
 
     // Save updated user
-    const userDB = await User.findByIdAndUpdate(id, user, { new: true })
+    const userDB = await User.findByIdAndUpdate(id, user, { new: true });    
 
     res.json({
         userDB,

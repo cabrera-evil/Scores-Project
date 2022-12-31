@@ -1,7 +1,7 @@
 let deploy_url = "https://morty-api.panificador.link/"
 let local_url = "http://localhost:3000/"
-let user_url = `${deploy_url}api/users`
-let faculty_url = `${deploy_url}api/faculties`
+let user_url = `${local_url}api/users`
+let faculty_url = `${local_url}api/faculties`
 
 // Get user id
 function parseJwt(token) {
@@ -48,8 +48,8 @@ if (window.location.pathname === '/evaluations.html') {
             table.removeChild(table.firstChild);
         }
         // Show loader
-        if(userEvaluations(subject))
-        document.getElementById('loader').style.display = 'block';
+        if (userEvaluations(subject))
+            document.getElementById('loader').style.display = 'block';
     }
 
     // Event listener for button click inside table actions
@@ -132,8 +132,8 @@ if (window.location.pathname === '/evaluations.html') {
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
-                    deleteEvaluation(evaluation);
-                    tr.remove();
+                    if (deleteEvaluation(evaluation, subject))
+                        tr.remove();
                 } else if (result.isDenied) {
                     Swal.fire('Evaluation not deleted', '', 'info')
                 }
@@ -141,6 +141,12 @@ if (window.location.pathname === '/evaluations.html') {
         }
     }
     );
+
+    // Reload button
+    const reload = document.getElementById('btn-reload');
+    reload.addEventListener('click', () => {
+        getEvaluations(search.value);
+    });
 
     // Requests
 
@@ -205,6 +211,10 @@ if (window.location.pathname === '/evaluations.html') {
 
     // Get user's evaluation by subject
     async function userEvaluations(subject) {
+        // If there's any child on table, delete it
+        while (table.firstChild) {
+            table.removeChild(table.firstChild);
+        }
         // Get user's evaluations by user subject
         axios.get(`${user_url}?_id=${user}`)
             .then(response => {
@@ -307,7 +317,7 @@ if (window.location.pathname === '/evaluations.html') {
     }
 
     // Delete evaluation
-    async function deleteEvaluation(evaluation) {
+    async function deleteEvaluation(evaluation, subject) {
         // Delete evaluation
         axios.patch(`${user_url}/${user}`, {
             evaluations: [
