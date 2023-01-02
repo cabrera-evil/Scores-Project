@@ -113,7 +113,12 @@ if (window.location.pathname === '/evaluations.html') {
                         subject_id: subject,
                         grade: newGrade
                     };
-                    updateEvaluationGrade(newEvaluation);
+                    if(newEvaluation.grade >=0 && grade <= 10)
+                        updateEvaluationGrade(newEvaluation);
+                    else{
+                        Swal.fire('Grade must be between 0 and 10', '', 'error')
+                        return;
+                    }
                     // Delete input and set a label with the new data
                     tr.children[3].innerText = newGrade;
                 } else if (result.isDenied) {

@@ -58,6 +58,7 @@ const usersPatch = async (req, res = response) => {
 
     const { id } = req.params;
     const { subjects, evaluations } = req.body;
+    console.log(subjects);
 
     // Find user
     const user = await User.findById(id);
@@ -76,8 +77,8 @@ const usersPatch = async (req, res = response) => {
                     subjects[0].times = subject.failed_attempts.length + 1;
                 }
 
-                // Update subject times
-                if (subjects[0].times > 1) {
+                // If subject isn't approved and it's not current, add failed attempt
+                if (!subject.approved && !subject.current) {
                     const failed_attempts = [
                         {
                             times: subject.times,
@@ -90,7 +91,9 @@ const usersPatch = async (req, res = response) => {
                     subject.failed_attempts = subject.failed_attempts ? subject.failed_attempts.concat(failed_attempts) : failed_attempts;
 
                     // Update times and average
-                    subject.times = subjects[0].times;
+
+                    // Add one more time
+                    subject.times = subject.times + 1;
                     subject.average = subjects[0].average ? subjects[0].average : 0;
                     subject.evaluations = subjects[0].evaluations ? subjects[0].evaluations : [];
                 }
@@ -107,8 +110,8 @@ const usersPatch = async (req, res = response) => {
                 }
             }
         })
-        // If there's no subject with the same id, add it
-        if (!flag) {
+        // If there's no subject with the same id, add it (with 5 current subjects as limit)
+        if (!flag && user.subjects.length < 5) {
             let subjectData = await getSubjectById(subjects[0].id);
             const newSubject = {
                 id: subjects[0].id,
@@ -154,16 +157,13 @@ const usersPatch = async (req, res = response) => {
                         }
 
                         // Update evaluation grade
-                        if (evaluations[i].grade && evaluations[i].grade >= 0 && evaluations[i].grade <= 10)
+                        if (evaluations[i].grade && evaluations[i].grade >= 0 && evaluations[i].grade <= 10) {
+                            // Set new evaluation grade
                             evaluation.grade = evaluations[i].grade ? evaluations[i].grade : 0;
 
-                        // Calculate average
-                        subject.average = calculateAverage(subject.evaluations);
-                        if (subject.average >= 6) {
-                            subject.approved = true;
-                        }
-                        else {
-                            subject.approved = false;
+                            // Calculate average
+                            subject.average = calculateAverage(subject.evaluations);
+                            subject.approved = subject.average >= 6 ? true : false;
                         }
                     }
                 })
@@ -176,16 +176,12 @@ const usersPatch = async (req, res = response) => {
                         percentage: evaluations[i].percentage,
                         grade: evaluations[i].grade ? evaluations[i].grade : 0,
                     }
-                    if (newEvaluation.grade >= 0 && newEvaluation.grade <= 10)
+                    if (newEvaluation.grade && newEvaluation.grade >= 0 && newEvaluation.grade <= 10) {
+                        // Set new evaluation grade
                         subject.evaluations.push(newEvaluation);
-
-                    // Update subject average
-                    subject.average = calculateAverage(subject.evaluations);
-                    if (subject.average >= 6) {
-                        subject.approved = true;
-                    }
-                    else {
-                        subject.approved = false;
+                        // Update subject average
+                        subject.average = calculateAverage(subject.evaluations);
+                        subject.approved = subject.average >= 6 ? true : false;
                     }
                 };
             }
@@ -208,7 +204,7 @@ const usersPatch = async (req, res = response) => {
     user.cum = calculateCum(user.subjects);
 
     // Save updated user
-    const userDB = await User.findByIdAndUpdate(id, user, { new: true });    
+    const userDB = await User.findByIdAndUpdate(id, user, { new: true });
 
     res.json({
         userDB,
