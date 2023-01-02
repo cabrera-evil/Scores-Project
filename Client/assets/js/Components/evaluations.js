@@ -73,56 +73,44 @@ if (window.location.pathname === '/evaluations.html') {
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
-                    // Edit grade by input
-                    const input = document.createElement('input');
-                    // Delete old grade
-                    if (tr.children[3].innerText != '') {
-                        tr.children[3].innerText = '';
-                        // Setting input
-                        input.type = 'number';
-                        input.classList.add('form-control');
-                        input.value = grade;
-                        input.style.width = '5rem';
-                        input.style.marginLeft = '1rem';
-                        input.min = 0;
-                        input.max = 10;
-                        // Append input in grade column
-                        tr.children[3].appendChild(input);
-                    }
+                    // Edit grade by swal input number with two decimals
+                    Swal.fire({
+                        title: 'Edit grade',
+                        input: 'number',
+                        inputLabel: 'Grade',
+                        inputValue: grade,
+                        inputAttributes: {
+                            step: '0.01',
+                            min: 0,
+                            max: 10
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: 'Save',
+                        showLoaderOnConfirm: true,
+                        preConfirm: (grade) => {
+                            if (grade >= 0 && grade <= 10) {
+                                return grade;
+                            }
+                            else {
+                                Swal.showValidationMessage(
+                                    `Grade must be between 0 and 10`
+                                )
+                            }
+                        },
+                        allowOutsideClick: () => !Swal.isLoading()
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const newEvaluation = {
+                                id: evaluation,
+                                subject_id: subject,
+                                grade: result.value
+                            };
+                            updateEvaluationGrade(newEvaluation);
+                            tr.children[3].innerText = result.value;
+                        }
+                    })
                 } else if (result.isDenied) {
                     Swal.fire('Subject not edited', '', 'info')
-                }
-            })
-        }
-
-        if (btn.classList.contains('btn-success')) {
-            Swal.fire({
-                title: 'Do you want to save the changes?',
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: 'Save',
-                denyButtonText: `Don't save`,
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    // Get current value on grade
-                    const newGrade = tr.children[3].children[0].value;
-
-                    const newEvaluation = {
-                        id: evaluation,
-                        subject_id: subject,
-                        grade: newGrade
-                    };
-                    if(newEvaluation.grade >=0 && grade <= 10)
-                        updateEvaluationGrade(newEvaluation);
-                    else{
-                        Swal.fire('Grade must be between 0 and 10', '', 'error')
-                        return;
-                    }
-                    // Delete input and set a label with the new data
-                    tr.children[3].innerText = newGrade;
-                } else if (result.isDenied) {
-                    Swal.fire('Changes are not saved', '', 'info')
                 }
             })
         }
@@ -239,31 +227,24 @@ if (window.location.pathname === '/evaluations.html') {
 
                             // Action buttons
                             const tdActions = document.createElement('td');
-                            const btnSuccess = document.createElement('button');
                             const btnEdit = document.createElement('button');
                             const btnDelete = document.createElement('button');
 
                             // Action buttons
-                            btnSuccess.classList.add('btn', 'btn-success', 'btn-circle', 'btn-sm');
                             btnEdit.classList.add('btn', 'btn-warning', 'btn-circle', 'btn-sm');
                             btnDelete.classList.add('btn', 'btn-danger', 'btn-circle', 'btn-sm');
 
                             // Add favicon button
-                            const check = document.createElement('i');
-                            check.classList.add('fas', 'fa-check');
-
                             const edit = document.createElement('i');
                             edit.classList.add('fas', 'fa-edit');
 
                             const trash = document.createElement('i');
                             trash.classList.add('fas', 'fa-trash');
 
-                            btnSuccess.appendChild(check);
                             btnEdit.appendChild(edit);
                             btnDelete.appendChild(trash);
 
                             // Styling buttons
-                            btnSuccess.style.marginLeft = '1rem';
                             btnEdit.style.marginLeft = '1rem';
                             btnDelete.style.marginLeft = '1rem';
 
@@ -274,7 +255,6 @@ if (window.location.pathname === '/evaluations.html') {
                             tdName.value = userEvaluations[i].evaluations[j].id;
                             tdPercentage.innerText = userEvaluations[i].evaluations[j].percentage;
                             tdGrade.innerText = userEvaluations[i].evaluations[j].grade;
-                            tdActions.appendChild(btnSuccess);
                             tdActions.appendChild(btnEdit);
                             tdActions.appendChild(btnDelete);
                             tr.appendChild(tdSubject);
