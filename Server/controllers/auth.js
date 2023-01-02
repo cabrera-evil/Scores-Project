@@ -30,7 +30,7 @@ const login = async (req, res = response) => {
         const {name, career_id, role} = user;
 
         res.json({
-            user: {name, career_id, role},
+            user: {name, email, career_id, role},
             token,
         });
     } catch (error) {
