@@ -58,7 +58,6 @@ const usersPatch = async (req, res = response) => {
 
     const { id } = req.params;
     const { subjects, evaluations } = req.body;
-    console.log(subjects);
 
     // Find user
     const user = await User.findById(id);
@@ -176,9 +175,11 @@ const usersPatch = async (req, res = response) => {
                         percentage: evaluations[i].percentage,
                         grade: evaluations[i].grade ? evaluations[i].grade : 0,
                     }
+                    // Save new evaluation's data
+                    subject.evaluations.push(newEvaluation);
+
+                    // Calculate average
                     if (newEvaluation.grade && newEvaluation.grade >= 0 && newEvaluation.grade <= 10) {
-                        // Set new evaluation grade
-                        subject.evaluations.push(newEvaluation);
                         // Update subject average
                         subject.average = calculateAverage(subject.evaluations);
                         subject.approved = subject.average >= 6 ? true : false;
