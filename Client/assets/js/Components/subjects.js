@@ -102,6 +102,7 @@ if (window.location.pathname === '/subjects.html') {
     // Reload button
     const reload = document.getElementById('btn-reload');
     reload.addEventListener('click', () => {
+        document.getElementById('loader').style.display = 'block';
         userSubjects();
     });
 

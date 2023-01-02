@@ -79,6 +79,7 @@ if (window.location.pathname == '/admin_users.html') {
     // Reload button
     const reload = document.getElementById('btn-reload');
     reload.addEventListener('click', () => {
+        document.getElementById('loader').style.display = 'block';
         getUsers();
     });
 
