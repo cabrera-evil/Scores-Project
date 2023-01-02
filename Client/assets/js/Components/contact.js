@@ -6,19 +6,14 @@ if (window.location.pathname === '/dashboard.html') {
     const contactForm = document.getElementById('contact-form');
     contactForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const name = JSON.parse(localStorage.getItem('user')).name;
         const email = JSON.parse(localStorage.getItem('user')).email;
         const message = document.getElementById('contact-message').value;
-        const data = {
-            name,
-            email,
-            message
-        }
+
         Email.send({
-            SecureToken: "36e15eb1-d767-43a9-a53b-dc34d315716f",
+            SecureToken: 'a70b3e5c-3409-4a97-9c84-55bd0f4773aa',
             To: 'projectmorty@gmail.com',
-            From: email,
-            Subject: `[Scores Project] Contact from ${name}`,
+            From: 'projectmorty@gmail.com',
+            Subject: `[Scores Project] Contact from ${email}`,
             Body: message
         }).then(
             message => alert(message)
