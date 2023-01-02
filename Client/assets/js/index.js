@@ -111,7 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Import other scripts
     loadScript("/assets/js/Home/header.js");
-    loadScript("/assets/js/Home/summary.js");
+
+    if(window.location.pathname == '/dashboard.html') {
+      loadScript("/assets/js/Home/summary.js");
+      loadScript("/assets/js/Components/contact.js");
+    }
 
     // Import other scripts
     if (window.location.pathname == '/subjects.html') {
