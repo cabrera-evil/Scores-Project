@@ -15,8 +15,22 @@ if (window.location.pathname === '/dashboard.html') {
             From: 'projectmorty@gmail.com',
             Subject: `[Scores Project] Contact from ${email}`,
             Body: message
-        }).then(
-            message => alert(message)
-        );
+        })
+            .then(
+                message => Swal.fire({
+                    title: 'Message sent!',
+                    text: 'We will contact you as soon as possible',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                })
+            )
+            .catch(
+                error => Swal.fire({
+                    title: 'Error!',
+                    text: 'Something went wrong, please try again later',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                })
+            );
     });
 }
