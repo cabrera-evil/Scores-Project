@@ -23,6 +23,8 @@ if (window.location.pathname === '/dashboard.html') {
                     icon: 'success',
                     confirmButtonText: 'Ok'
                 })
+                // Clear message area
+                .then(() => document.getElementById('contact-message').value = '')
             )
             .catch(
                 error => Swal.fire({
