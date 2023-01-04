@@ -90,9 +90,9 @@
             </div>
 
             <li class="nav-item admin-panel">
-            <a class="nav-link" href="admin_users.html">
-                <i class="fas fa-fw fa-users"></i>
-                <span>Users</span></a>
+                <a class="nav-link" href="admin_users.html">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Users</span></a>
             </li>
 
             <!-- Divider -->
@@ -356,7 +356,7 @@
                                 <div class="form-group>
                                 <label for=" number">Evaluation number</label>
                                     <input type="number" class="form-control" id="number" name="number"
-                                        placeholder="1, 2, 3, 4, 5, etc..." required min="1", max="10">
+                                        placeholder="1, 2, 3, 4, 5, etc..." required min="1" , max="10">
                                     <div class="invalid-feedback">
                                         Invalid number
                                     </div>
@@ -377,13 +377,20 @@
                         </form>
 
                         <div class="card-body">
+                            <label for="subject">Subject</label>
+                            <select id="find-subject" name="subject" class="form-control" required>
+                                <option value="" selected>Select subject</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                What's the subject?
+                            </div>
+                            <!-- Show average -->
+                            <label for="average">Average</label>
+                            <!-- Show blocked input -->
+                            <input type="number" class="form-control" id="average" name="average" placeholder="0" readonly><br>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
-                                        <label for="subject">Subject</label>
-                                        <select id="find-subject" name="subject" class="form-control" required>
-                                            <option value="" selected>Select subject</option>
-                                        </select>
                                         <tr>
                                             <th>Subject</th>
                                             <th>Name</th>

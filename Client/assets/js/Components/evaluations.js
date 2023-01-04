@@ -191,7 +191,6 @@ if (window.location.pathname === '/evaluations.html') {
                     showConfirmButton: false,
                     timer: 1500
                 })
-                // window.location.href = '/evaluations.html';
             })
             .catch(error => {
                 Swal.fire({
@@ -204,6 +203,9 @@ if (window.location.pathname === '/evaluations.html') {
 
     // Get user's evaluation by subject
     async function userEvaluations(subject) {
+        const average = document.getElementById('average');
+        average.value = 0;
+
         // If there's any child on table, delete it
         while (table.firstChild) {
             table.removeChild(table.firstChild);
@@ -263,6 +265,9 @@ if (window.location.pathname === '/evaluations.html') {
                             tr.appendChild(tdGrade);
                             tr.appendChild(tdActions);
                             table.appendChild(tr);
+
+                            // Set the subject average
+                            average.value = userEvaluations[i].average;
                         }
                     }
                 }
@@ -290,6 +295,8 @@ if (window.location.pathname === '/evaluations.html') {
                     showConfirmButton: false,
                     timer: 1500
                 })
+                // Reload
+                userEvaluations(newEvaluation.subject_id);
             }
             )
             .catch(error => {
