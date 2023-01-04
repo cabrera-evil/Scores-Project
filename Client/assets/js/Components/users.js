@@ -74,6 +74,43 @@ if (window.location.pathname == '/admin_users.html') {
             }
             )
         }
+
+        // Delete user
+        if (btn.classList.contains('btn-danger')) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete(`${user_url}/${id}`, {
+                        headers: {
+                            'x-token': localStorage.getItem('token')
+                        }
+                    })
+                        .then(response => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'User deleted!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            getUsers();
+                        }).catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            })
+                        }
+                        );
+                }
+            })
+        }
     });
 
     // Reload button
@@ -110,31 +147,24 @@ if (window.location.pathname == '/admin_users.html') {
 
                     // Action buttons
                     const tdActions = document.createElement('td');
-                    const btnSuccess = document.createElement('button');
                     const btnEdit = document.createElement('button');
                     const btnDelete = document.createElement('button');
 
                     // Action buttons
-                    btnSuccess.classList.add('btn', 'btn-success', 'btn-circle', 'btn-sm');
                     btnEdit.classList.add('btn', 'btn-warning', 'btn-circle', 'btn-sm');
                     btnDelete.classList.add('btn', 'btn-danger', 'btn-circle', 'btn-sm');
 
                     // Add favicon button
-                    const check = document.createElement('i');
-                    check.classList.add('fas', 'fa-check');
-
                     const edit = document.createElement('i');
                     edit.classList.add('fas', 'fa-edit');
 
                     const trash = document.createElement('i');
                     trash.classList.add('fas', 'fa-trash');
 
-                    btnSuccess.appendChild(check);
                     btnEdit.appendChild(edit);
                     btnDelete.appendChild(trash);
 
                     // Styling buttons
-                    btnSuccess.style.marginLeft = '1rem';
                     btnEdit.style.marginLeft = '1rem';
                     btnDelete.style.marginLeft = '1rem';
 
@@ -156,7 +186,6 @@ if (window.location.pathname == '/admin_users.html') {
                     tr.appendChild(tdActions);
 
                     // Append buttons to table
-                    tdActions.appendChild(btnSuccess);
                     tdActions.appendChild(btnEdit);
                     tdActions.appendChild(btnDelete);
 
