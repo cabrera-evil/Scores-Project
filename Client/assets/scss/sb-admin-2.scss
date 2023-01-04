@@ -1,10 +1,10 @@
-// Import Custom UCA SCORES Variables (Overrides Default Bootstrap Variables)
+// Import Custom SCORES PROJECT Variables (Overrides Default Bootstrap Variables)
 @import "variables.scss";
 
 // Import Bootstrap
 @import "../vendor/bootstrap/assets/scss/bootstrap.scss";
 
-// Import Custom UCA SCORES Mixins and Components
+// Import Custom SCORES PROJECT Mixins and Components
 @import "mixins.scss";
 @import "global.scss";
 @import "utilities.scss";
