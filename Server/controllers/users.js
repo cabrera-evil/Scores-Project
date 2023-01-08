@@ -168,10 +168,27 @@ const usersPatch = async (req, res = response) => {
                 })
                 // If there's no evaluation with the same id, add it
                 if (!flag) {
+                    // Read all existent evaluation names, and add a number to the new one
+                    let evaluationNames = [];
+                    subject.evaluations.forEach((evaluation) => {
+                        evaluationNames.push(evaluation.name);
+                    })
+
+                    // Add a number to the new evaluation name
+                    let counter = 1;
+                    let newEvaluationName = `${evaluations[i].name}-${counter}`;
+
+                    // Check if the name already exists
+                    while (evaluationNames.includes(newEvaluationName)) {
+                        newEvaluationName = `${evaluations[i].name}-${counter}`;
+                        counter++;
+                    }
+
+                    // New evaluation data
                     const newEvaluation = {
                         id: uuidv4(),
                         subject_id: evaluations[i].subject_id,
-                        name: evaluations[i].name,
+                        name: newEvaluationName,
                         percentage: evaluations[i].percentage,
                         grade: evaluations[i].grade ? evaluations[i].grade : 0,
                     }

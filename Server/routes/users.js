@@ -50,6 +50,8 @@ router.delete(
 router.patch("/:id",
     [
         validateJWT,
+        check("id", "Invalid Mongo ID").isMongoId(),
+        check("id").custom(userExistByID),
         validateFields,
     ], usersPatch
 );

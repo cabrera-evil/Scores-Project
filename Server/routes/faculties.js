@@ -3,8 +3,7 @@ const { check } = require("express-validator");
 
 const { validateFields, validateJWT } = require("../middlewares");
 
-const {
-} = require("../helpers/db-validators");
+const { facultyExistByID } = require("../helpers/db-validators");
 
 const {
     facultyGet,
@@ -49,6 +48,8 @@ router.delete(
 router.patch("/:id",
     [
         validateJWT,
+        check("id", "Invalid Mongo ID").isMongoId(),
+        check("id").custom(facultyExistByID),
         validateFields,
     ], facultyPatch
 );
