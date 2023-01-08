@@ -174,7 +174,7 @@ if (window.location.pathname === '/evaluations.html') {
             evaluations: [
                 {
                     subject_id: data.subject,
-                    name: `${data.name}-${data.number}`,
+                    name: data.name,
                     percentage: data.percentage
                 }
             ]
