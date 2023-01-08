@@ -22,11 +22,12 @@ frmRegister.addEventListener('submit', async (e) => {
     const formData = new FormData(frmRegister);
     const data = Object.fromEntries(formData);
 
+    document.getElementById('loader').style.display = 'block';
     await registerUser(data);
 });
 
 // Register user request
-function registerUser(data) {
+async function registerUser(data) {
     axios.post(url, {
         name: data.name,
         email: data.email,
@@ -34,13 +35,16 @@ function registerUser(data) {
         career: data.career
     })
         .then(response => {
+            document.getElementById('loader').style.display = 'none';
             Swal.fire({
                     icon: 'success',
                     title: 'User successfully registered',
                     showConfirmButton: false,
                     timer: 1500
                 })
-            window.location.href = '/index.html';
+                .then(() => {
+                    window.location.href = '/../../index.html';
+                });
         })
         .catch(error => {
             Swal.fire({
@@ -48,6 +52,7 @@ function registerUser(data) {
                 title: 'Oops...',
                 text: 'Something went wrong!',
             })
+            document.getElementById('loader').style.display = 'none';
         });
 }
 

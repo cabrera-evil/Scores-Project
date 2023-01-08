@@ -20,13 +20,14 @@ const login = async (email, password) => {
                 title: 'Oops...',
                 text: 'Something went wrong!',
             })
+            document.getElementById('loader').style.display = 'none';
     });
     ;
 };
 
 // Send input data to login request
 const frmLogin = document.getElementById('frm-login');
-frmLogin.addEventListener('submit', (e) => {
+frmLogin.addEventListener('submit', async (e) => {
     e.preventDefault();
     e.stopPropagation();
     if (frmLogin.checkValidity() === false) {
@@ -35,5 +36,7 @@ frmLogin.addEventListener('submit', (e) => {
     frmLogin.classList.add('was-validated');
     const formData = new FormData(frmLogin);
     const data = Object.fromEntries(formData);
-    login(data.email, data.password);
+    
+    document.getElementById('loader').style.display = 'block';
+    await login(data.email, data.password);
 });
